@@ -30,7 +30,12 @@
               <button class="btn btn-light" type="button" (click)="toggleExpand()">{{expanded ? 'Hide' : 'Expand'}}</button>
             </p>
             <div *ngIf="expanded">
-              <div id="{{'gallery' + item.itemId[0]}}" class="carousel slide" data-ride="carousel">
+              <!-- Gallery Carousel -->
+              <div id="{{'gallery' + item.itemId[0]}}" class="carousel slide" data-ride="carousel" data-interval="false">
+                <ol class="carousel-indicators">
+                  <li *ngFor="let image of gallery; first as isFirst; index as i" [ngClass]="{ active : isFirst }"
+                    [attr.data-target]="'#gallery' + item.itemId[0]" [attr.data-slide-to]="i"></li>
+                </ol>
                 <div class="carousel-inner">
                   <div class="carousel-item" *ngFor="let image of gallery; first as isFirst" [ngClass]="{ active : isFirst }">
                     <img src="{{image}}" class="d-block w-100" alt="{{image}}">

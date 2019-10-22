@@ -9,10 +9,10 @@ export class ApiService {
   constructor( private http: HttpClient ) { };
 
   searchItems( keywords: string ): any {
-    return this.http.get( environment.baseUrl + 'search/' + keywords ).pipe( tap( res => console.log( res ) ) );
+    return this.http.get( environment.baseUrl + 'search/' + keywords );
   }
 
   getItem( id: string ): any {
-    return this.http.get( environment.baseUrl + 'item/' + id ).pipe( tap( res => console.log( res ) ) );
+    return this.http.get( environment.baseUrl + 'item/' + id );
   }
 }
