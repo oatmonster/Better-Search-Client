@@ -8,7 +8,11 @@ import { environment } from '../environments/environment';
 export class ApiService {
   constructor( private http: HttpClient ) { };
 
-  getItems( keywords: string ): any {
-    return this.http.get( environment.baseUrl + '/search/' + keywords );
+  searchItems( keywords: string ): any {
+    return this.http.get( environment.baseUrl + 'search/' + keywords );
+  }
+
+  getItem( id: string ): any {
+    return this.http.get( environment.baseUrl + 'item/' + id );
   }
 }
