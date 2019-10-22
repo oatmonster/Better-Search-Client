@@ -27,10 +27,25 @@
         <div class="row">
           <div class="col">
             <p>
-              <button class="btn btn-light" type="button" (click)="toggleExpand()">Expand</button>
+              <button class="btn btn-light" type="button" (click)="toggleExpand()">{{expanded ? 'Hide' : 'Expand'}}</button>
             </p>
             <div *ngIf="expanded">
-              <img class="mw-100" src="{{gallery[0]}}">
+              <div id="{{'gallery' + item.itemId[0]}}" class="carousel slide" data-ride="carousel">
+                <div class="carousel-inner">
+                  <div class="carousel-item" *ngFor="let image of gallery; first as isFirst" [ngClass]="{ active : isFirst }">
+                    <img src="{{image}}" class="d-block w-100" alt="{{image}}">
+                  </div>
+                </div>
+                <a class="carousel-control-prev" *ngIf="gallery.length > 1" href="{{'#gallery' + item.itemId[0]}}" role="button"
+                  data-slide="prev">
+                  <span class="carousel-control-prev-icon"></span>
+                </a>
+
+                <a class="carousel-control-next" *ngIf="gallery.length > 1" href="{{'#gallery' + item.itemId[0]}}" role="button"
+                  data-slide="next">
+                  <span class="carousel-control-next-icon"></span>
+                </a>
+              </div>
             </div>
           </div>
         </div>
