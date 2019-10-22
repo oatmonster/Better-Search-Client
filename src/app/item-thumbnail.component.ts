@@ -10,6 +10,10 @@ import { ApiService } from './api.service';
       width: 150px;
       height: 150px;
     }
+
+    .carousel-item {
+      transition: 0.2s ease-in-out left;
+  }
   `]
 } )
 export class ItemThumbnailComponent implements OnInit {
