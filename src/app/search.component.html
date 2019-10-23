@@ -1,5 +1,5 @@
 <div class="container">
-  <form #searchForm="ngForm" (ngSubmit)="search(searchForm.value)" autocomplete="off" novalidate>
+  <form #searchForm="ngForm" (ngSubmit)="search(searchForm.value.query)" autocomplete="off" novalidate>
     <div class="form-row form-group">
       <div class="col">
         <input [(ngModel)]="query" name="query" type="text" class="form-control" id="searchInput" placeholder="Search">

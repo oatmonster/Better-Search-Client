@@ -20,9 +20,9 @@ export class SearchComponent implements OnInit {
     private activatedRoute: ActivatedRoute
   ) { };
 
-  search( form ) {
-    this.router.navigateByUrl( 'search/' + form.query );
-    this.apiService.searchItems( form.query ).subscribe( res => {
+  search( query: string ) {
+    this.router.navigateByUrl( 'search/' + query );
+    this.apiService.searchItems( query ).subscribe( res => {
       this.items = res;
     } );
   }
