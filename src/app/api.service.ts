@@ -8,10 +8,11 @@ import { environment } from '../environments/environment';
 export class ApiService {
   constructor( private httpClient: HttpClient ) { };
 
-  searchItems( keyword: string ): any {
-    const options = { 'params': new HttpParams().set( 'keyword', keyword ) };
+  searchItems( queryForm: any ): any {
+    const options = { 'params': new HttpParams().set( 'query', queryForm.query ) };
+    options.params = options.params.set( 'page', queryForm.page );
 
-    return this.httpClient.get( environment.baseUrl + 'search', options );
+    return this.httpClient.get( environment.baseUrl + 'search', options ).pipe( tap( res => console.log( res ) ) );
   }
 
   getItem( id: string ): any {

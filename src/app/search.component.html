@@ -1,13 +1,35 @@
 <div class="container">
-  <form #searchForm="ngForm" (ngSubmit)="search(searchForm.value.query)" autocomplete="off" novalidate>
+  <!-- Search Bar -->
+  <form [formGroup]="searchForm" (ngSubmit)="onSubmit()">
     <div class="form-row form-group">
       <div class="col">
-        <input [(ngModel)]="query" name="query" type="text" class="form-control" id="searchInput" placeholder="Search">
+        <input formControlName="query" type="text" class="form-control" placeholder="Search">
       </div>
       <button type="submit" class="btn btn-primary">Submit</button>
     </div>
+    <!-- Item List -->
+    <ul class="list-group">
+      <item-thumbnail *ngFor="let item of items" [item]="item"></item-thumbnail>
+    </ul>
+    <!-- Pagination -->
+    <br>
+    <nav>
+      <ul class="pagination justify-content-center">
+        <li class="page-item">
+          <a class="page-link">
+            <span>&laquo;</span>
+          </a>
+        </li>
+        <li class="page-item" *ngFor="let page of pages" [ngClass]="{active: searchForm.value.page == page}">
+          <button class="page-link" (click)="toPage(page)">{{page}}{{searchForm.value.page}}</button>
+        </li>
+        <li class="page-item">
+          <a class="page-link">
+            <span>&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
   </form>
-  <ul class="list-group">
-    <item-thumbnail *ngFor="let item of items" [item]="item"></item-thumbnail>
-  </ul>
+
 </div>
