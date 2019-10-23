@@ -19,7 +19,7 @@ import { appRoutes } from './routes';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    RouterModule.forRoot( appRoutes, { onSameUrlNavigation: 'reload' } ),
+    RouterModule.forRoot( appRoutes ),
   ],
   declarations: [
     AppComponent,
