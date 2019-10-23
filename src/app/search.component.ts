@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
+import { switchMap } from 'rxjs/operators';
 
 import { ApiService } from './api.service';
 
@@ -21,16 +22,15 @@ export class SearchComponent implements OnInit {
   ) { };
 
   search( query: string ) {
-    this.router.navigateByUrl( 'search/' + query );
-    this.apiService.searchItems( query ).subscribe( res => {
-      this.items = res;
-    } );
+    this.router.navigate( [ '/search', { keyword: query, foo: 'foo' } ] );
   }
 
   ngOnInit() {
-    this.query = this.activatedRoute.snapshot.params[ 'query' ];
-    this.apiService.searchItems( this.query ).subscribe( res => {
-      this.items = res;
+    this.activatedRoute.paramMap.subscribe( params => {
+      this.query = params.get( 'keyword' );
+      this.apiService.searchItems( this.query ).subscribe( res => {
+        this.items = res;
+      } );
     } );
   }
 }

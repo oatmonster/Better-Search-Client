@@ -8,20 +8,19 @@ export const appRoutes = [
     component: ItemDetailComponent,
   },
   {
-    path: 'search/:query',
+    path: 'search',
     component: SearchComponent,
-    RunGuardsAndResolvers: 'always',
   },
   {
     path: '',
     component: SearchComponent,
   },
-  {
-    path: '404',
-    component: NotFoundComponent
-  },
-  {
-    path: '**',
-    redirectTo: '/404'
-  }
+  // {
+  //   path: '404',
+  //   component: NotFoundComponent
+  // },
+  // {
+  //   path: '**',
+  //   redirectTo: '/404'
+  // }
 ];
