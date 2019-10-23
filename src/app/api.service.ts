@@ -1,18 +1,20 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { tap } from 'rxjs/operators';
 
 import { environment } from '../environments/environment';
 
 @Injectable()
 export class ApiService {
-  constructor( private http: HttpClient ) { };
+  constructor( private httpClient: HttpClient ) { };
 
-  searchItems( keywords: string ): any {
-    return this.http.get( environment.baseUrl + 'search/' + keywords );
+  searchItems( keyword: string ): any {
+    const options = { 'params': new HttpParams().set( 'keyword', keyword ) };
+
+    return this.httpClient.get( environment.baseUrl + 'search', options );
   }
 
   getItem( id: string ): any {
-    return this.http.get( environment.baseUrl + 'item/' + id );
+    return this.httpClient.get( environment.baseUrl + 'item/' + id );
   }
 }
