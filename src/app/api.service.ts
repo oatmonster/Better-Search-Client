@@ -8,9 +8,11 @@ import { environment } from '../environments/environment';
 export class ApiService {
   constructor( private httpClient: HttpClient ) { };
 
-  searchItems( queryForm: any ): any {
+  searchItems( queryForm: IQuery ): any {
     const options = { 'params': new HttpParams().set( 'query', queryForm.query ) };
-    options.params = options.params.set( 'page', queryForm.page );
+    if ( queryForm.page != null ) {
+      options.params = options.params.set( 'page', '' + queryForm.page );
+    }
 
     return this.httpClient.get( environment.baseUrl + 'search', options ).pipe( tap( res => console.log( res ) ) );
   }
@@ -18,4 +20,9 @@ export class ApiService {
   getItem( id: string ): any {
     return this.httpClient.get( environment.baseUrl + 'item/' + id );
   }
+}
+
+export interface IQuery {
+  query: string,
+  page?: number
 }

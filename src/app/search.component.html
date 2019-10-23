@@ -15,18 +15,18 @@
     <br>
     <nav>
       <ul class="pagination justify-content-center">
-        <li class="page-item">
-          <a class="page-link">
+        <li class="page-item" [ngClass]="{disabled: searchForm.value.page == 1}">
+          <button class="page-link" type="button" (click)="toPage(searchForm.value.page - 1)">
             <span>&laquo;</span>
-          </a>
+          </button>
         </li>
         <li class="page-item" *ngFor="let page of pages" [ngClass]="{active: searchForm.value.page == page}">
-          <button class="page-link" (click)="toPage(page)">{{page}}{{searchForm.value.page}}</button>
+          <button class="page-link" type="button" [attr.disabled]="searchForm.value.page == page ? true : null" (click)="toPage(page)">{{page}}</button>
         </li>
-        <li class="page-item">
-          <a class="page-link">
+        <li class="page-item" [ngClass]="{disabled: searchForm.value.page == 100}">
+          <button class="page-link" type="button" (click)="toPage(searchForm.value.page + 1)">
             <span>&raquo;</span>
-          </a>
+          </button>
         </li>
       </ul>
     </nav>

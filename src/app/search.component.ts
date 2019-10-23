@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl } from '@angular/forms';
 
 import { ApiService } from './api.service';
-import { parseI18nMeta } from '@angular/compiler/src/render3/view/i18n';
+import { IQuery } from './api.service';
 
 @Component( {
   selector: 'search',
@@ -18,10 +18,8 @@ export class SearchComponent implements OnInit {
   } );
 
   items: any[];
-  pagination: any;
-  pages: number[];
-
-  query: string;
+  pagination: any = {};
+  pages: number[] = [];
 
   constructor(
     private apiService: ApiService,
@@ -30,9 +28,18 @@ export class SearchComponent implements OnInit {
   ) { };
 
   onSubmit() {
+    console.log( 'submit' );
     this.router.navigate( [ '/search', {
       query: this.searchForm.value.query,
-      page: this.searchForm.value.page
+      page: 1
+    } ] );
+  }
+
+  toPage( newPage: number ) {
+    console.log( newPage );
+    this.router.navigate( [ '/search', {
+      query: this.searchForm.value.query,
+      page: newPage
     } ] );
   }
 
@@ -51,25 +58,29 @@ export class SearchComponent implements OnInit {
     }
   }
 
-  toPage( newPage: number ) {
-    this.searchForm.patchValue( { page: newPage } );
-    this.onSubmit();
-  }
-
   ngOnInit() {
 
     this.activatedRoute.paramMap.subscribe( params => {
       console.log( params );
-      //this.searchForm.patchValue( params.get );
-      this.searchForm.patchValue( { query: params.get( 'query' ) } );
-      this.searchForm.patchValue( { page: params.get( 'page' ) } );
+      var query: IQuery = {
+        query: params.get( 'query' ),
+      }
 
-      this.apiService.searchItems( this.searchForm.value ).subscribe( res => {
+      if ( params.has( 'page' ) ) {
+        query.page = +params.get( 'page' )
+      }
+
+      console.log( query );
+
+      this.apiService.searchItems( query ).subscribe( res => {
         this.items = res.searchResult[ 0 ].item || [];
         this.pagination = res.paginationOutput[ 0 ];
 
-        this.searchForm.patchValue( { page: +this.pagination.pageNumber[ 0 ] } );
-        this.setPages( +this.pagination.pageNumber[ 0 ], +this.pagination.totalPages[ 0 ], 10 );
+        this.searchForm.patchValue( { query: query.query, page: +this.pagination.pageNumber[ 0 ] } );
+
+        this.setPages( +this.pagination.pageNumber[ 0 ], 100, 10 );
+        window.scroll( 0, 0 );
+
       } );
     } );
   }
