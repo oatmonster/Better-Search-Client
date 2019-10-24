@@ -7,13 +7,24 @@
       </div>
       <button type="submit" class="btn btn-primary">Submit</button>
     </div>
+    <div class="form-row form-group">
+      <div class="col">
+        Stuff
+      </div>
+      <div class="col">
+        More stuff
+      </div>
+    </div>
     <!-- Item List -->
     <ul class="list-group">
       <item-thumbnail *ngFor="let item of items" [item]="item"></item-thumbnail>
     </ul>
     <!-- Pagination -->
     <br>
-    <nav>
+    <div *ngIf="pagination.totalEntries && +pagination?.totalEntries[0] == 0">
+      <p>No Results :(</p>
+    </div>
+    <nav *ngIf="pages.length > 0">
       <ul class="pagination justify-content-center">
         <li class="page-item" [ngClass]="{disabled: searchForm.value.page == 1}">
           <button class="page-link" type="button" (click)="toPage(searchForm.value.page - 1)">

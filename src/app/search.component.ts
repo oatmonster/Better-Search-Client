@@ -78,7 +78,7 @@ export class SearchComponent implements OnInit {
 
         this.searchForm.patchValue( { query: query.query, page: +this.pagination.pageNumber[ 0 ] } );
 
-        this.setPages( +this.pagination.pageNumber[ 0 ], 100, 10 );
+        this.setPages( +this.pagination.pageNumber[ 0 ], Math.min( 100, +this.pagination.totalPages[ 0 ] ), 10 );
         window.scroll( 0, 0 );
 
       } );
