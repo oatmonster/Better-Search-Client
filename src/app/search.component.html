@@ -3,17 +3,32 @@
   <form [formGroup]="searchForm" (ngSubmit)="onSubmit()">
     <div class="form-row form-group">
       <div class="col">
-        <input formControlName="query" type="text" class="form-control" placeholder="Search">
+        <div><input formControlName="query" type="text" class="form-control" placeholder="Search"></div>
       </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
+      <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Search</button>
+      </div>
+
     </div>
     <div class="form-row form-group">
       <div class="col">
         Stuff
       </div>
-      <div class="col">
-        More stuff
+      <!-- Sort Order -->
+      <div class="col text-right">
+        <div class="dropdown">
+          <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">
+            {{ sortings.get(searchForm.value.sort) }}
+          </button>
+          <div class="dropdown-menu dropdown-menu-right">
+            <button class="dropdown-item" type="button" *ngFor="let sort of sortings | keyvalue" (click)="changeSort(sort.key)"
+              [ngClass]="{active: searchForm.value.sort == sort.key}">
+              {{ sort.value }}
+            </button>
+          </div>
+        </div>
       </div>
+
     </div>
     <!-- Item List -->
     <ul class="list-group">
@@ -27,15 +42,15 @@
     <nav *ngIf="pages.length > 0">
       <ul class="pagination justify-content-center">
         <li class="page-item" [ngClass]="{disabled: searchForm.value.page == 1}">
-          <button class="page-link" type="button" (click)="toPage(searchForm.value.page - 1)">
+          <button class="page-link" type="button" (click)="changePage(searchForm.value.page - 1)">
             <span>&laquo;</span>
           </button>
         </li>
-        <li class="page-item" *ngFor="let page of pages" [ngClass]="{active: searchForm.value.page == page}">
-          <button class="page-link" type="button" [attr.disabled]="searchForm.value.page == page ? true : null" (click)="toPage(page)">{{page}}</button>
+        <li class="page-item" *ngFor="let page of pages" [ngClass]="{'active': searchForm.value.page == page, 'd-none': searchForm.value.page != page, 'd-md-block': searchForm.value.page != page}">
+          <button class="page-link" type="button" [attr.disabled]="searchForm.value.page == page ? true : null" (click)="changePage(page)">{{page}}</button>
         </li>
         <li class="page-item" [ngClass]="{disabled: searchForm.value.page == 100}">
-          <button class="page-link" type="button" (click)="toPage(searchForm.value.page + 1)">
+          <button class="page-link" type="button" (click)="changePage(searchForm.value.page + 1)">
             <span>&raquo;</span>
           </button>
         </li>

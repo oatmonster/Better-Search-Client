@@ -12,14 +12,28 @@ import { IQuery } from './api.service';
 } )
 export class SearchComponent implements OnInit {
 
-  searchForm = new FormGroup( {
-    query: new FormControl( '' ),
-    page: new FormControl( '' ),
-  } );
-
   items: any[];
   pagination: any = {};
   pages: number[] = [];
+  // sortings = [
+  //   { sorting: 'Best Match', value: 0 },
+  //   { sorting: 'Time Ending: Soonest', value: 1 },
+  //   { sorting: 'New Listings', value: 2 },
+  //   { sorting: 'Price: Low to High', value: 3 },
+  // ]
+  sortings = new Map( [
+    [ 0, 'Best Match' ],
+    [ 1, 'Time: Ending Soonest' ],
+    [ 2, 'Time: Newly Listed' ],
+    [ 3, 'Price+Shipping: Lowest First' ],
+    [ 4, 'Price+Shipping' ]
+  ] );
+
+  searchForm = new FormGroup( {
+    query: new FormControl( '' ),
+    page: new FormControl( '' ),
+    sort: new FormControl( '' )
+  } );
 
   constructor(
     private apiService: ApiService,
@@ -28,19 +42,25 @@ export class SearchComponent implements OnInit {
   ) { };
 
   onSubmit() {
-    console.log( 'submit' );
-    this.router.navigate( [ '/search', {
-      query: this.searchForm.value.query,
-      page: 1
-    } ] );
+    var params: IQuery = { query: this.searchForm.value.query }
+    if ( this.searchForm.value.sort > 0 ) params.sort = this.searchForm.value.sort;
+
+    this.router.navigate( [ '/search', params ] );
   }
 
-  toPage( newPage: number ) {
-    console.log( newPage );
-    this.router.navigate( [ '/search', {
-      query: this.searchForm.value.query,
-      page: newPage
-    } ] );
+  changeSort( newSort: number ) {
+    var params: IQuery = { query: this.searchForm.value.query }
+    if ( newSort > 0 ) params.sort = '' + newSort;
+
+    this.router.navigate( [ '/search', params ] );
+  }
+
+  changePage( newPage: number ) {
+    var params: IQuery = { query: this.searchForm.value.query }
+    if ( this.searchForm.value.sort > 0 ) params.sort = this.searchForm.value.sort;
+    if ( newPage > 1 ) params.page = newPage;
+
+    this.router.navigate( [ '/search', params ] );
   }
 
   setPages( currentPage: number, totalPages: number, toDisplay: number ) {
@@ -61,26 +81,35 @@ export class SearchComponent implements OnInit {
   ngOnInit() {
 
     this.activatedRoute.paramMap.subscribe( params => {
-      console.log( params );
-      var query: IQuery = {
-        query: params.get( 'query' ),
-      }
+      var query: IQuery = { query: params.get( 'query' ) }
 
       if ( params.has( 'page' ) ) {
-        query.page = +params.get( 'page' )
+        query.page = +params.get( 'page' );
+      }
+
+      if ( params.has( 'sort' ) ) {
+        query.sort = params.get( 'sort' );
       }
 
       console.log( query );
 
       this.apiService.searchItems( query ).subscribe( res => {
-        this.items = res.searchResult[ 0 ].item || [];
-        this.pagination = res.paginationOutput[ 0 ];
+        if ( res.ack[ 0 ] == 'Success' ) {
+          this.items = res.searchResult[ 0 ].item || [];
+          this.pagination = res.paginationOutput[ 0 ];
 
-        this.searchForm.patchValue( { query: query.query, page: +this.pagination.pageNumber[ 0 ] } );
+          this.searchForm.patchValue( {
+            query: query.query,
+            page: +this.pagination.pageNumber,
+            sort: +query.sort || 0
+          } );
 
-        this.setPages( +this.pagination.pageNumber[ 0 ], Math.min( 100, +this.pagination.totalPages[ 0 ] ), 10 );
-        window.scroll( 0, 0 );
-
+          this.setPages( +this.pagination.pageNumber[ 0 ], Math.min( 100, +this.pagination.totalPages[ 0 ] ), 8 );
+          window.scroll( 0, 0 );
+        }
+        else {
+          console.log( 'No Results' );
+        }
       } );
     } );
   }

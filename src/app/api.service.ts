@@ -10,8 +10,13 @@ export class ApiService {
 
   searchItems( queryForm: IQuery ): any {
     const options = { 'params': new HttpParams().set( 'query', queryForm.query ) };
+
+    // Set optional params
     if ( queryForm.page != null ) {
       options.params = options.params.set( 'page', '' + queryForm.page );
+    }
+    if ( queryForm.sort != null ) {
+      options.params = options.params.set( 'sort', queryForm.sort );
     }
 
     return this.httpClient.get( environment.baseUrl + 'search', options ).pipe( tap( res => console.log( res ) ) );
@@ -24,5 +29,6 @@ export class ApiService {
 
 export interface IQuery {
   query: string,
-  page?: number
+  page?: number,
+  sort?: string
 }
