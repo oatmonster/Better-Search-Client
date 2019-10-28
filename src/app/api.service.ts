@@ -18,6 +18,9 @@ export class ApiService {
     if ( queryForm.sort != null ) {
       options.params = options.params.set( 'sort', queryForm.sort );
     }
+    if ( queryForm.listType != null ) {
+      options.params = options.params.set( 'listType', queryForm.listType );
+    }
 
     return this.httpClient.get( environment.baseUrl + 'search', options ).pipe( tap( res => console.log( res ) ) );
   }
@@ -30,5 +33,6 @@ export class ApiService {
 export interface IQuery {
   query: string,
   page?: number,
-  sort?: string
+  sort?: string,
+  listType?: string
 }
