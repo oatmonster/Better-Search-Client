@@ -12,17 +12,21 @@
     </div>
     <div class="form-row form-group">
       <div class="col">
-        Stuff
+        <!-- Listing Type -->
+        <div class="btn-group">
+          <button class="btn btn-light" type="button" *ngFor="let listType of types | keyvalue" (click)="changeType(listType.key)"
+            [ngClass]="{active: searchForm.value.listType == listType.key}">{{ listType.value }}</button>
+        </div>
       </div>
       <!-- Sort Order -->
       <div class="col text-right">
         <div class="dropdown">
           <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">
-            {{ sortings.get(searchForm.value.sort) }}
+            {{ sortings.get(searchForm.value.sortBy) }}
           </button>
           <div class="dropdown-menu dropdown-menu-right">
             <button class="dropdown-item" type="button" *ngFor="let sort of sortings | keyvalue" (click)="changeSort(sort.key)"
-              [ngClass]="{active: searchForm.value.sort == sort.key}">
+              [ngClass]="{active: searchForm.value.sortBy == sort.key}">
               {{ sort.value }}
             </button>
           </div>

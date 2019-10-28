@@ -15,12 +15,6 @@ export class SearchComponent implements OnInit {
   items: any[];
   pagination: any = {};
   pages: number[] = [];
-  // sortings = [
-  //   { sorting: 'Best Match', value: 0 },
-  //   { sorting: 'Time Ending: Soonest', value: 1 },
-  //   { sorting: 'New Listings', value: 2 },
-  //   { sorting: 'Price: Low to High', value: 3 },
-  // ]
   sortings = new Map( [
     [ 0, 'Best Match' ],
     [ 1, 'Time: Ending Soonest' ],
@@ -28,11 +22,18 @@ export class SearchComponent implements OnInit {
     [ 3, 'Price+Shipping: Lowest First' ],
     [ 4, 'Price+Shipping' ]
   ] );
+  types = new Map( [
+    [ 0, 'All Listings' ],
+    [ 1, 'Buy it Now' ],
+    [ 2, 'Accepts Offers' ],
+    [ 3, 'Auctions' ]
+  ] );
 
   searchForm = new FormGroup( {
     query: new FormControl( '' ),
     page: new FormControl( '' ),
-    sort: new FormControl( '' )
+    sortBy: new FormControl( '' ),
+    listType: new FormControl( '' )
   } );
 
   constructor(
@@ -43,7 +44,8 @@ export class SearchComponent implements OnInit {
 
   onSubmit() {
     var params: IQuery = { query: this.searchForm.value.query }
-    if ( this.searchForm.value.sort > 0 ) params.sort = this.searchForm.value.sort;
+    if ( this.searchForm.value.sort > 0 ) params.sort = this.searchForm.value.sortBy;
+    if ( this.searchForm.value.listingType > 0 ) params.listType = this.searchForm.value.listingType;
 
     this.router.navigate( [ '/search', params ] );
   }
@@ -51,13 +53,23 @@ export class SearchComponent implements OnInit {
   changeSort( newSort: number ) {
     var params: IQuery = { query: this.searchForm.value.query }
     if ( newSort > 0 ) params.sort = '' + newSort;
+    if ( this.searchForm.value.listingType > 0 ) params.listType = this.searchForm.value.listingType;
+
+    this.router.navigate( [ '/search', params ] );
+  }
+
+  changeType( newType: number ) {
+    var params: IQuery = { query: this.searchForm.value.query }
+    if ( newType > 0 ) params.listType = '' + newType;
+    if ( this.searchForm.value.sortBy > 0 ) params.sort = this.searchForm.value.sortBy;
 
     this.router.navigate( [ '/search', params ] );
   }
 
   changePage( newPage: number ) {
     var params: IQuery = { query: this.searchForm.value.query }
-    if ( this.searchForm.value.sort > 0 ) params.sort = this.searchForm.value.sort;
+    if ( this.searchForm.value.sortBy > 0 ) params.sort = this.searchForm.value.sortBy;
+    if ( this.searchForm.value.listingType > 0 ) params.listType = this.searchForm.value.listingType;
     if ( newPage > 1 ) params.page = newPage;
 
     this.router.navigate( [ '/search', params ] );
@@ -91,7 +103,12 @@ export class SearchComponent implements OnInit {
         query.sort = params.get( 'sort' );
       }
 
+      if ( params.has( 'listType' ) ) {
+        query.listType = params.get( 'listType' );
+      }
+
       console.log( query );
+      console.log( 'Controls: ', this.searchForm.controls );
 
       this.apiService.searchItems( query ).subscribe( res => {
         if ( res.ack[ 0 ] == 'Success' ) {
@@ -101,7 +118,8 @@ export class SearchComponent implements OnInit {
           this.searchForm.patchValue( {
             query: query.query,
             page: +this.pagination.pageNumber,
-            sort: +query.sort || 0
+            sortBy: +query.sort || 0,
+            listType: +query.listType || 0
           } );
 
           this.setPages( +this.pagination.pageNumber[ 0 ], Math.min( 100, +this.pagination.totalPages[ 0 ] ), 8 );
