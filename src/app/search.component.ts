@@ -20,7 +20,7 @@ export class SearchComponent implements OnInit {
     [ 1, 'Time: Ending Soonest' ],
     [ 2, 'Time: Newly Listed' ],
     [ 3, 'Price+Shipping: Lowest First' ],
-    [ 4, 'Price+Shipping' ]
+    [ 4, 'Price+Shipping: Highest First' ]
   ] );
   types = new Map( [
     [ 0, 'All Listings' ],
