@@ -18,6 +18,7 @@ import { ApiService } from './api.service';
 } )
 export class ItemThumbnailComponent implements OnInit {
   @Input() item;
+  @Input() index;
 
   expanded: boolean = false;
   fetched: boolean = false;

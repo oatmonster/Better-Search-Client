@@ -36,7 +36,10 @@
     </div>
     <!-- Item List -->
     <ul class="list-group">
-      <item-thumbnail *ngFor="let item of items" [item]="item"></item-thumbnail>
+      <li class="list-group-item border-left-0 border-right-0" *ngFor="let item of items; index as i">
+        <item-thumbnail [item]="item" [index]="i"></item-thumbnail>
+      </li>
+
     </ul>
     <!-- Pagination -->
     <br>
