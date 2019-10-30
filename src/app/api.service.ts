@@ -15,8 +15,8 @@ export class ApiService {
     if ( queryForm.page != null ) {
       options.params = options.params.set( 'page', '' + queryForm.page );
     }
-    if ( queryForm.sort != null ) {
-      options.params = options.params.set( 'sort', queryForm.sort );
+    if ( queryForm.sortBy != null ) {
+      options.params = options.params.set( 'sortBy', queryForm.sortBy );
     }
     if ( queryForm.listType != null ) {
       options.params = options.params.set( 'listType', queryForm.listType );
@@ -33,6 +33,6 @@ export class ApiService {
 export interface IQuery {
   query: string,
   page?: number,
-  sort?: string,
+  sortBy?: string,
   listType?: string
 }
