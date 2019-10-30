@@ -44,16 +44,17 @@ export class SearchComponent implements OnInit {
 
   onSubmit() {
     var params: IQuery = { query: this.searchForm.value.query }
-    if ( this.searchForm.value.sort > 0 ) params.sort = this.searchForm.value.sortBy;
-    if ( this.searchForm.value.listingType > 0 ) params.listType = this.searchForm.value.listingType;
+    console.log( this.searchForm.value );
+    if ( this.searchForm.value.sortBy > 0 ) params.sortBy = this.searchForm.value.sortBy;
+    if ( this.searchForm.value.listType > 0 ) params.listType = this.searchForm.value.listType;
 
     this.router.navigate( [ '/search', params ] );
   }
 
   changeSort( newSort: number ) {
     var params: IQuery = { query: this.searchForm.value.query }
-    if ( newSort > 0 ) params.sort = '' + newSort;
-    if ( this.searchForm.value.listingType > 0 ) params.listType = this.searchForm.value.listingType;
+    if ( newSort > 0 ) params.sortBy = '' + newSort;
+    if ( this.searchForm.value.listType > 0 ) params.listType = this.searchForm.value.listType;
 
     this.router.navigate( [ '/search', params ] );
   }
@@ -61,14 +62,14 @@ export class SearchComponent implements OnInit {
   changeType( newType: number ) {
     var params: IQuery = { query: this.searchForm.value.query }
     if ( newType > 0 ) params.listType = '' + newType;
-    if ( this.searchForm.value.sortBy > 0 ) params.sort = this.searchForm.value.sortBy;
+    if ( this.searchForm.value.sortBy > 0 ) params.sortBy = this.searchForm.value.sortBy;
 
     this.router.navigate( [ '/search', params ] );
   }
 
   changePage( newPage: number ) {
     var params: IQuery = { query: this.searchForm.value.query }
-    if ( this.searchForm.value.sortBy > 0 ) params.sort = this.searchForm.value.sortBy;
+    if ( this.searchForm.value.sortBy > 0 ) params.sortBy = this.searchForm.value.sortBy;
     if ( this.searchForm.value.listingType > 0 ) params.listType = this.searchForm.value.listingType;
     if ( newPage > 1 ) params.page = newPage;
 
@@ -99,8 +100,8 @@ export class SearchComponent implements OnInit {
         query.page = +params.get( 'page' );
       }
 
-      if ( params.has( 'sort' ) ) {
-        query.sort = params.get( 'sort' );
+      if ( params.has( 'sortBy' ) ) {
+        query.sortBy = params.get( 'sortBy' );
       }
 
       if ( params.has( 'listType' ) ) {
@@ -118,7 +119,7 @@ export class SearchComponent implements OnInit {
           this.searchForm.patchValue( {
             query: query.query,
             page: +this.pagination.pageNumber,
-            sortBy: +query.sort || 0,
+            sortBy: +query.sortBy || 0,
             listType: +query.listType || 0
           } );
 

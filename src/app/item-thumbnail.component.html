@@ -19,7 +19,9 @@
               {{item.sellingStatus[0].currentPrice[0]['@currencyId']}}</p>
           </div>
           <div class="col">
-            {{item.listingInfo[0].listingType[0]}}
+            List Type: {{item.listingInfo[0].listingType[0]}}
+            <br>
+            Offer Enabled: {{item.listingInfo[0].bestOfferEnabled[0]}}
           </div>
           <div class="col text-right">
             <!-- Switch this to use the ending time and calculate/display remaining time -->
