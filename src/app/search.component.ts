@@ -124,8 +124,7 @@ export class SearchComponent implements OnInit {
 
           this.setPages( +this.pagination.pageNumber[ 0 ], Math.min( 100, +this.pagination.totalPages[ 0 ] ), 8 );
           window.scroll( 0, 0 );
-        }
-        else {
+        } else {
           console.log( 'No Results' );
         }
       } );
