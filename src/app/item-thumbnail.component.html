@@ -1,64 +1,64 @@
-<li class="list-group-item border-left-0 border-right-0">
-  <div class="container">
-    <div class="row">
-      <div class="col col-lg-2">
-        <a routerLink="/item/{{item.itemId[0]}}">
-          <img class="thumbnail" src="{{item.galleryURL[0]}}" alt="No Image">
-        </a>
-      </div>
-      <div class="col">
-        <a routerLink="/item/{{item.itemId[0]}}">
-          <p class="title">
-            {{item.title[0]}}
+<div class="container">
+  <div class="row">
+    <div class="col col-lg-2">
+      <a routerLink="/item/{{item.itemId[0]}}">
+        <img class="thumbnail" src="{{item.galleryURL[0]}}" alt="No Image">
+      </a>
+    </div>
+    <div class="col">
+      <a routerLink="/item/{{item.itemId[0]}}">
+        <p class="title">
+          {{item.title[0]}}
+        </p>
+
+      </a>
+      <div class="row">
+        <div class="col">
+          <p>
+            Current Price: {{item.sellingStatus[0].currentPrice[0].__value__}}
+            {{item.sellingStatus[0].currentPrice[0]['@currencyId']}}
           </p>
-
-        </a>
-        <div class="row">
-          <div class="col">
-            <p>Current Price: {{item.sellingStatus[0].currentPrice[0].__value__}}
-              {{item.sellingStatus[0].currentPrice[0]['@currencyId']}}</p>
-          </div>
-          <div class="col">
-            List Type: {{item.listingInfo[0].listingType[0]}}
-            <br>
-            Offer Enabled: {{item.listingInfo[0].bestOfferEnabled[0]}}
-          </div>
-          <div class="col text-right">
-            <!-- Switch this to use the ending time and calculate/display remaining time -->
-            Time Left:{{item.sellingStatus[0].timeLeft[0]}}
-          </div>
+          <p>
+            <button class="btn btn-light" type="button" (click)="toggleExpand()">{{expanded ? 'Hide' : 'Expand'}}</button>
+          </p>
         </div>
-        <div class="row">
-          <div class="col">
-            <p>
-              <button class="btn btn-light" type="button" (click)="toggleExpand()">{{expanded ? 'Hide' : 'Expand'}}</button>
-            </p>
-            <div *ngIf="expanded">
-              <!-- Gallery Carousel -->
-              <div id="{{'gallery' + item.itemId[0]}}" class="carousel slide" data-ride="carousel" data-interval="false">
-                <ol class="carousel-indicators">
-                  <li *ngFor="let image of gallery; first as isFirst; index as i" [ngClass]="{ active : isFirst }"
-                    [attr.data-target]="'#gallery' + item.itemId[0]" [attr.data-slide-to]="i"></li>
-                </ol>
-                <div class="carousel-inner">
-                  <div class="carousel-item" *ngFor="let image of gallery; first as isFirst" [ngClass]="{ active : isFirst }">
-                    <img src="{{image}}" class="d-block w-100" alt="{{image}}">
-                  </div>
+        <div class="col">
+          List Type: {{item.listingInfo[0].listingType[0]}}
+          <br>
+          Offer Enabled: {{item.listingInfo[0].bestOfferEnabled[0]}}
+        </div>
+        <div class="col text-right">
+          <!-- Switch this to use the ending time and calculate/display remaining time -->
+          Time Left:{{item.sellingStatus[0].timeLeft[0]}}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div *ngIf="expanded">
+            <!-- Gallery Carousel -->
+            <div id="{{'gallery' + index}}" class="carousel slide" data-ride="carousel" data-interval="false">
+              <ol class="carousel-indicators">
+                <li *ngFor="let image of gallery; first as isFirst; index as i" [ngClass]="{ active : isFirst }"
+                  [attr.data-target]="'#gallery' + index" [attr.data-slide-to]="i"></li>
+              </ol>
+              <div class="carousel-inner">
+                <div class="carousel-item" *ngFor="let image of gallery; first as isFirst" [ngClass]="{ active : isFirst }">
+                  <img src="{{image}}" class="d-block w-100" alt="{{image}}">
                 </div>
-                <a class="carousel-control-prev" *ngIf="gallery.length > 1" href="{{'#gallery' + item.itemId[0]}}" role="button"
-                  data-slide="prev">
-                  <span class="carousel-control-prev-icon"></span>
-                </a>
-
-                <a class="carousel-control-next" *ngIf="gallery.length > 1" href="{{'#gallery' + item.itemId[0]}}" role="button"
-                  data-slide="next">
-                  <span class="carousel-control-next-icon"></span>
-                </a>
               </div>
+              <a class="carousel-control-prev" *ngIf="gallery.length > 1" href="{{'#gallery' + index}}" role="button"
+                data-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+              </a>
+
+              <a class="carousel-control-next" *ngIf="gallery.length > 1" href="{{'#gallery' + index}}" role="button"
+                data-slide="next">
+                <span class="carousel-control-next-icon"></span>
+              </a>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</li>
+</div>
