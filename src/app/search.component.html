@@ -1,38 +1,38 @@
 <div class="container">
   <!-- Search Bar -->
   <form [formGroup]="searchForm" (ngSubmit)="search( { newPage: 1 } )">
-    <div class="form-row form-group">
-      <div class="col">
-        <div><input formControlName="query" type="text" class="form-control" placeholder="Search"></div>
-      </div>
-      <div class="col-auto">
-        <button type="submit" class="btn btn-primary">Search</button>
-      </div>
-
-    </div>
-    <div class="form-row form-group">
-      <div class="col">
-        <!-- Listing Type -->
-        <div class="btn-group">
-          <button class="btn btn-light" type="button" *ngFor="let listType of types | keyvalue" (click)="search( { newListType: listType.key } )"
-            [ngClass]="{ active: searchForm.value.listType == listType.key }">{{ listType.value }}</button>
+    <div class="sticky-top bg-white">
+      <div class="form-row form-group">
+        <div class="col">
+          <div><input formControlName="query" type="text" class="form-control" placeholder="Search"></div>
+        </div>
+        <div class="col-auto">
+          <button type="submit" class="btn btn-primary">Search</button>
         </div>
       </div>
-      <!-- Sort Order -->
-      <div class="col text-right">
-        <div class="dropdown">
-          <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">
-            {{ sortings.get(searchForm.value.sortBy) }}
-          </button>
-          <div class="dropdown-menu dropdown-menu-right">
-            <button class="dropdown-item" type="button" *ngFor="let sort of sortings | keyvalue" (click)="search( { newSort: sort.key } )"
-              [ngClass]="{ active: searchForm.value.sortBy == sort.key }">
-              {{ sort.value }}
+      <div class="form-row form-group">
+        <div class="col">
+          <!-- Listing Type -->
+          <div class="btn-group">
+            <button class="btn btn-light" type="button" *ngFor="let listType of types | keyvalue" (click)="search( { newListType: listType.key } )"
+              [ngClass]="{ active: searchForm.value.listType == listType.key }">{{ listType.value }}</button>
+          </div>
+        </div>
+        <!-- Sort Order -->
+        <div class="col text-right">
+          <div class="dropdown">
+            <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">
+              {{ sortings.get(searchForm.value.sortBy) }}
             </button>
+            <div class="dropdown-menu dropdown-menu-right">
+              <button class="dropdown-item" type="button" *ngFor="let sort of sortings | keyvalue" (click)="search( { newSort: sort.key } )"
+                [ngClass]="{ active: searchForm.value.sortBy == sort.key }">
+                {{ sort.value }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
-
     </div>
     <!-- Item List -->
     <ul class="list-group">
