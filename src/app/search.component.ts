@@ -42,35 +42,14 @@ export class SearchComponent implements OnInit {
     private activatedRoute: ActivatedRoute
   ) { };
 
-  onSubmit() {
+  search( {
+    newSort = this.searchForm.value.sortBy,
+    newListType = this.searchForm.value.listType,
+    newPage = this.searchForm.value.page
+  } = {} ) {
     var params: IQuery = { query: this.searchForm.value.query }
-    console.log( this.searchForm.value );
-    if ( this.searchForm.value.sortBy > 0 ) params.sortBy = this.searchForm.value.sortBy;
-    if ( this.searchForm.value.listType > 0 ) params.listType = this.searchForm.value.listType;
-
-    this.router.navigate( [ '/search', params ] );
-  }
-
-  changeSort( newSort: number ) {
-    var params: IQuery = { query: this.searchForm.value.query }
-    if ( newSort > 0 ) params.sortBy = '' + newSort;
-    if ( this.searchForm.value.listType > 0 ) params.listType = this.searchForm.value.listType;
-
-    this.router.navigate( [ '/search', params ] );
-  }
-
-  changeType( newType: number ) {
-    var params: IQuery = { query: this.searchForm.value.query }
-    if ( newType > 0 ) params.listType = '' + newType;
-    if ( this.searchForm.value.sortBy > 0 ) params.sortBy = this.searchForm.value.sortBy;
-
-    this.router.navigate( [ '/search', params ] );
-  }
-
-  changePage( newPage: number ) {
-    var params: IQuery = { query: this.searchForm.value.query }
-    if ( this.searchForm.value.sortBy > 0 ) params.sortBy = this.searchForm.value.sortBy;
-    if ( this.searchForm.value.listingType > 0 ) params.listType = this.searchForm.value.listingType;
+    if ( newSort > 0 ) params.sortBy = newSort;
+    if ( newListType > 0 ) params.listType = newListType;
     if ( newPage > 1 ) params.page = newPage;
 
     this.router.navigate( [ '/search', params ] );
@@ -109,7 +88,6 @@ export class SearchComponent implements OnInit {
       }
 
       console.log( query );
-      console.log( 'Controls: ', this.searchForm.controls );
 
       this.apiService.searchItems( query ).subscribe( res => {
         if ( res.ack[ 0 ] == 'Success' ) {
