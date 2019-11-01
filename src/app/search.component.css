@@ -2,3 +2,12 @@
   padding-top: 25px;
   padding-bottom: 15px;
 }
+
+.border-input {
+  border: 1px solid #ced4da;
+}
+
+.category-dropdown {         
+  max-height: 400px;
+  overflow-y: auto;
+}

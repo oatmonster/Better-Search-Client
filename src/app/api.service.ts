@@ -21,12 +21,19 @@ export class ApiService {
     if ( queryForm.listType != null ) {
       options.params = options.params.set( 'listType', queryForm.listType );
     }
+    if ( queryForm.category != null ) {
+      options.params = options.params.set( 'category', queryForm.category );
+    }
 
-    return this.httpClient.get( environment.baseUrl + 'search', options ).pipe( tap( res => console.log( res ) ) );
+    return this.httpClient.get( environment.baseUrl + 'search', options ).pipe( tap( res => console.log( 'Search Items Response: ', res ) ) );
   }
 
   getItem( id: string ): any {
     return this.httpClient.get( environment.baseUrl + 'item/' + id ).pipe( tap( res => console.log( res ) ) );
+  }
+
+  getCategories(): any {
+    return this.httpClient.get( environment.baseUrl + 'categories' );
   }
 }
 
@@ -34,5 +41,6 @@ export interface IQuery {
   query: string,
   page?: number,
   sortBy?: string,
-  listType?: string
+  listType?: string,
+  category?: string
 }

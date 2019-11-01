@@ -29,29 +29,35 @@ export class SearchComponent implements OnInit {
     [ 2, 'Accepts Offers' ],
     [ 3, 'Auctions' ]
   ] );
+  categories: Map<number, string>;
+  everythingElseID: number;
 
   searchForm = new FormGroup( {
     query: new FormControl( '' ),
     page: new FormControl( '' ),
     sortBy: new FormControl( '' ),
-    listType: new FormControl( '' )
+    listType: new FormControl( '' ),
+    category: new FormControl( '' )
   } );
 
   constructor(
     private apiService: ApiService,
     private router: Router,
     private activatedRoute: ActivatedRoute
-  ) { };
+  ) {
+  };
 
   search( {
     newSort = this.searchForm.value.sortBy,
     newListType = this.searchForm.value.listType,
-    newPage = this.searchForm.value.page
+    newPage = this.searchForm.value.page,
+    newCategory = this.searchForm.value.category
   } = {} ) {
     var params: IQuery = { query: this.searchForm.value.query }
     if ( newSort > 0 ) params.sortBy = newSort;
     if ( newListType > 0 ) params.listType = newListType;
     if ( newPage > 1 ) params.page = newPage;
+    if ( newCategory > 0 ) params.category = newCategory;
 
     this.router.navigate( [ '/search', params ] );
   }
@@ -71,7 +77,19 @@ export class SearchComponent implements OnInit {
     }
   }
 
+  sortByValue( a, b ) {
+    return a.value > b.value ? 1 : ( b.value > a.value ? -1 : 0 );
+  }
+
   ngOnInit() {
+
+    this.apiService.getCategories().subscribe( res => {
+      if ( res.ack === 'Success' ) {
+        console.log( res.categories.map( obj => [ +obj.id, obj.name ] ) )
+        this.categories = new Map( res.categories.map( obj => [ +obj.id, obj.name ] ) );
+        console.log( this.categories )
+      }
+    } );
 
     this.activatedRoute.paramMap.subscribe( params => {
       var query: IQuery = { query: params.get( 'query' ) }
@@ -88,6 +106,10 @@ export class SearchComponent implements OnInit {
         query.listType = params.get( 'listType' );
       }
 
+      if ( params.has( 'category' ) ) {
+        query.category = params.get( 'category' );
+      }
+
       console.log( query );
 
       this.apiService.searchItems( query ).subscribe( res => {
@@ -99,7 +121,8 @@ export class SearchComponent implements OnInit {
             query: query.query,
             page: +this.pagination.pageNumber,
             sortBy: +query.sortBy || 0,
-            listType: +query.listType || 0
+            listType: +query.listType || 0,
+            category: +query.category || 0
           } );
 
           this.setPages( +this.pagination.pageNumber[ 0 ], Math.min( 100, +this.pagination.totalPages[ 0 ] ), 8 );
