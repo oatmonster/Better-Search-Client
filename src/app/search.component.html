@@ -4,7 +4,23 @@
     <div class="sticky-top bg-white">
       <div class="form-row form-group">
         <div class="col">
-          <div><input formControlName="query" type="text" class="form-control" placeholder="Search"></div>
+          <div class="input-group">
+            <input formControlName="query" type="text" class="form-control border-right-0" placeholder="Search">
+            <div class="input-group-append">
+              <button class="btn btn-white border-input dropdown-toggle" data-flip="false" type="button" data-toggle="dropdown">
+                {{ categories?.has( searchForm.value.category ) ? categories?.get( searchForm.value.category ) : 'All
+                Categories' }} </button>
+              <div class="dropdown-menu category-dropdown">
+                <div>
+                  <button class="dropdown-item" type="button" (click)="searchForm.patchValue( {category: category.key } )">All
+                    Categories</button>
+                </div>
+                <button class="dropdown-item" type="button" *ngFor="let category of categories | keyvalue:sortByValue"
+                  (click)="searchForm.patchValue( {category: category.key } )" [ngClass]="{ active: searchForm.value.category == category.key }">{{category.value}}</button>
+              </div>
+            </div>
+          </div>
+          <!-- <div><input formControlName="query" type="text" class="form-control" placeholder="Search"></div> -->
         </div>
         <div class="col-auto">
           <button type="submit" class="btn btn-primary">Search</button>
