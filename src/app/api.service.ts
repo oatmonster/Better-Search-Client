@@ -25,15 +25,21 @@ export class ApiService {
       options.params = options.params.set( 'category', queryForm.category );
     }
 
-    return this.httpClient.get( environment.baseUrl + 'search', options ).pipe( tap( res => console.log( 'Search Items Response: ', res ) ) );
+    return this.httpClient.get( environment.baseUrl + 'search', options ).pipe( tap( res =>
+      console.log( 'Search Items Response: ', res )
+    ) );
   }
 
   getItem( id: string ): any {
-    return this.httpClient.get( environment.baseUrl + 'item/' + id ).pipe( tap( res => console.log( res ) ) );
+    return this.httpClient.get( environment.baseUrl + 'item/' + id ).pipe( tap( res =>
+      console.log( 'Get Item Response: ', res )
+    ) );
   }
 
   getCategories(): any {
-    return this.httpClient.get( environment.baseUrl + 'categories' );
+    return this.httpClient.get( environment.baseUrl + 'categories' ).pipe( tap( res =>
+      console.log( 'Categories Response: ', res )
+    ) );
   }
 }
 
