@@ -84,10 +84,10 @@ export class SearchComponent implements OnInit {
   ngOnInit() {
 
     this.apiService.getCategories().subscribe( res => {
-      if ( res.ack === 'Success' ) {
-        console.log( res.categories.map( obj => [ +obj.id, obj.name ] ) )
-        this.categories = new Map( res.categories.map( obj => [ +obj.id, obj.name ] ) );
-        console.log( this.categories )
+      if ( res.Ack[ 0 ] === 'Success' ) {
+        this.categories = new Map(
+          res.CategoryArray[ 0 ].Category.map( obj => [ +obj.CategoryID, obj.CategoryName ] )
+        );
       }
     } );
 
