@@ -24,6 +24,9 @@ export class ApiService {
     if ( queryForm.category != null ) {
       options.params = options.params.set( 'category', queryForm.category );
     }
+    if ( queryForm.condition != null ) {
+      options.params = options.params.set( 'condition', queryForm.condition );
+    }
 
     return this.httpClient.get( environment.baseUrl + 'search', options ).pipe( tap( res =>
       console.log( 'Search Items Response: ', res )
@@ -31,15 +34,21 @@ export class ApiService {
   }
 
   getItem( id: string ): any {
-    return this.httpClient.get( environment.baseUrl + 'item/' + id ).pipe( tap( res =>
-      console.log( 'Get Item Response: ', res )
-    ) );
+    return this.httpClient.get( environment.baseUrl + 'item/' + id ).pipe( tap( res => {
+      console.log( 'Get Item Response: ', res );
+    } ) );
   }
 
-  getCategories(): any {
-    return this.httpClient.get( environment.baseUrl + 'categories' ).pipe( tap( res =>
-      console.log( 'Categories Response: ', res )
-    ) );
+  getBaseCategories(): any {
+    return this.httpClient.get( environment.baseUrl + 'category' ).pipe( tap( res => {
+      console.log( 'Categories Response: ', res );
+    } ) );
+  }
+
+  getCategoryConditions( id: string ): any {
+    return this.httpClient.get( environment.baseUrl + 'condition/' + id ).pipe( tap( res => {
+      console.log( 'Category Condition Response: ', res );
+    } ) );
   }
 }
 
@@ -48,5 +57,6 @@ export interface IQuery {
   page?: number,
   sortBy?: string,
   listType?: string,
-  category?: string
+  category?: string,
+  condition?: string
 }
