@@ -9,12 +9,10 @@
             <div class="input-group-append">
               <button class="btn btn-white border-input dropdown-toggle" data-flip="false" type="button" data-toggle="dropdown">
                 {{ categories?.has( searchForm.value.category ) ? categories?.get( searchForm.value.category )[0] :
-                'All
-                Categories' }} </button>
+                '' }}
+              </button>
               <div class="dropdown-menu category-dropdown">
-                <button class="dropdown-item" type="button" (click)="searchForm.patchValue( {category: '' } )">All
-                  Categories</button>
-                <button class="dropdown-item" type="button" *ngFor="let category of categories | keyvalue:sortCategoriesInOrder"
+                <button class="dropdown-item" type="button" *ngFor="let category of categories | keyvalue:sortMapInOrder"
                   (click)="searchForm.patchValue( {category: category.key } )" [ngClass]="{ active: searchForm.value.category == category.key }">{{category.value[0]}}</button>
               </div>
             </div>
@@ -48,16 +46,17 @@
         </div>
       </div>
       <div class="form-row form-group">
-        <!-- Item Conditoin -->
+        <!-- Item Condition -->
         <div class="col">
           <div class="dropdown">
             <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">
-              {{ sortings.get(searchForm.value.sortBy) }}
+              {{ conditions?.has(searchForm.value.condition) ? conditions?.get(searchForm.value.condition)[0] :
+              '' }}
             </button>
             <div class="dropdown-menu">
-              <button class="dropdown-item" type="button" *ngFor="let sort of sortings | keyvalue" (click)="search( { newSort: sort.key } )"
-                [ngClass]="{ active: searchForm.value.sortBy == sort.key }">
-                {{ sort.value }}
+              <button class="dropdown-item" type="button" *ngFor="let condition of conditions | keyvalue:sortMapInOrder"
+                (click)="search( { newCondition: condition.key } )" [ngClass]="{ active: searchForm.value.condition == condition.key }">
+                {{ condition.value[0] }}
               </button>
             </div>
           </div>
