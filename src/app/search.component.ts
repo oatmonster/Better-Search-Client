@@ -34,9 +34,7 @@ export class SearchComponent implements OnInit {
     [ 'Used', 'Used' ],
     [ 'Unspecified', 'Unspecified' ]
   ] );
-  categories: Map<number, string>;
-  everythingElseID: number;
-
+  categories: Map<number, string[]>;
 
   searchForm = new FormGroup( {
     query: new FormControl( '' ),
@@ -83,8 +81,14 @@ export class SearchComponent implements OnInit {
     }
   }
 
-  sortByValue( a, b ) {
-    return a.value > b.value ? 1 : ( b.value > a.value ? -1 : 0 );
+  updateConditions() {
+    this.apiService.getCategoryConditions( this.searchForm.value.category ).subscribe( res => {
+
+    } );
+  }
+
+  sortCategoriesInOrder( a, b ) {
+    return a.value[ 1 ] > b.value[ 1 ] ? 1 : ( b.value[ 1 ] > a.value[ 1 ] ? -1 : 0 );
   }
 
   ngOnInit() {
@@ -92,12 +96,10 @@ export class SearchComponent implements OnInit {
     this.apiService.getBaseCategories().subscribe( res => {
       if ( res.Ack[ 0 ] === 'Success' ) {
         this.categories = new Map(
-          res.CategoryArray[ 0 ].Category.map( obj => {
-            if ( obj.CategoryName == 'Everything Else' ) this.everythingElseID = obj.CategoryID;
-            return [ +obj.CategoryID, obj.CategoryName ];
+          res.CategoryArray[ 0 ].Category.map( ( obj, i ) => {
+            return [ +obj.CategoryID, [ obj.CategoryName, i ] ];
           } )
         );
-        this.categories.delete( this.everythingElseID );
       }
 
     } );
@@ -121,6 +123,10 @@ export class SearchComponent implements OnInit {
         query.category = params.get( 'category' );
       }
 
+      if ( params.has( 'condition' ) ) {
+        query.condition = params.get( 'condition' );
+      }
+
       console.log( query );
 
       this.apiService.searchItems( query ).subscribe( res => {
@@ -137,6 +143,7 @@ export class SearchComponent implements OnInit {
           } );
 
           this.setPages( +this.pagination.pageNumber[ 0 ], Math.min( 100, +this.pagination.totalPages[ 0 ] ), 8 );
+          this.updateConditions();
           window.scroll( 0, 0 );
           console.log( this.searchForm.value );
         } else {
