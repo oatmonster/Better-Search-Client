@@ -45,6 +45,8 @@ export class SearchComponent implements OnInit {
     condition: new FormControl( '' )
   } );
 
+  currentState: IQuery;
+
   constructor(
     private apiService: ApiService,
     private router: Router,
@@ -63,11 +65,14 @@ export class SearchComponent implements OnInit {
     if ( +newSort > 0 ) params.sortBy = newSort;
     if ( +newListType > 0 ) params.listType = newListType;
     if ( newPage > 1 ) params.page = newPage;
+    if ( newCondition != this.currentState.condition ) newCategory = this.currentState.category;
     if ( +newCategory > 0 ) params.category = newCategory;
-    if ( newCondition != 0 ) params.condition = newCondition;
+    if ( newCategory != this.currentState.category ) newCondition = '0';
+    if ( +newCondition != 0 ) params.condition = newCondition;
 
     this.router.navigate( [ '/search', params ] );
   }
+
 
   setPages( currentPage: number, totalPages: number, toDisplay: number ) {
     var minPage = currentPage - Math.floor( toDisplay / 2 );
@@ -99,21 +104,14 @@ export class SearchComponent implements OnInit {
           } );
           this.conditions.set( 'Unspecified', [ 'Unspecified', res.Category[ 0 ].ConditionValues[ 0 ].Condition.length + 1 ] );
         } else {
-          this.conditions.set( 'New', [ 'New', '1' ] );
-          this.conditions.set( 'Used', [ 'Used', '2' ] );
-          this.conditions.set( 'Unspecified', [ 'Unspecified', '3' ] );
+          this.conditions.set( 'Used', [ 'Used', '1' ] );
+          this.conditions.set( 'Unspecified', [ 'Unspecified', '2' ] );
         }
       } );
     }
-
   }
 
-  sortMapInOrder( a, b ) {
-    return +a.value[ 1 ] > +b.value[ 1 ] ? 1 : ( +b.value[ 1 ] > +a.value[ 1 ] ? -1 : 0 );
-  }
-
-  ngOnInit() {
-
+  updateCategories() {
     this.apiService.getBaseCategories().subscribe( res => {
       if ( res.Ack[ 0 ] === 'Success' ) {
         this.categories = new Map(
@@ -124,13 +122,21 @@ export class SearchComponent implements OnInit {
         this.categories.set( '0', [ 'All Categories', '-1' ] );
       }
       console.log( this.categories );
-
     } );
+  }
+
+  sortMapInOrder( a, b ) {
+    return +a.value[ 1 ] > +b.value[ 1 ] ? 1 : ( +b.value[ 1 ] > +a.value[ 1 ] ? -1 : 0 );
+  }
+
+  ngOnInit() {
+
+    this.updateCategories();
 
     this.activatedRoute.paramMap.subscribe( params => {
       var query: IQuery = { query: params.get( 'query' ) }
 
-      if ( params.has( 'page' ) ) {
+      if ( params.has( 'page' ) && +params.get( 'page' ) <= 100 && +params.get( 'page' ) >= 1 ) {
         query.page = +params.get( 'page' );
       }
 
@@ -157,19 +163,21 @@ export class SearchComponent implements OnInit {
           this.items = res.searchResult[ 0 ].item || [];
           this.pagination = res.paginationOutput[ 0 ];
 
-          this.searchForm.patchValue( {
+          this.currentState = {
             query: query.query,
             page: +this.pagination.pageNumber,
             sortBy: query.sortBy || '0',
             listType: query.listType || '0',
             category: query.category || '0',
             condition: query.condition || '0'
-          } );
+          };
+
+          this.searchForm.patchValue( this.currentState );
 
           this.setPages( +this.pagination.pageNumber[ 0 ], Math.min( 100, +this.pagination.totalPages[ 0 ] ), 8 );
           this.updateConditions();
           window.scroll( 0, 0 );
-          console.log( this.searchForm.value );
+
         } else {
           console.log( 'No Results' );
         }
