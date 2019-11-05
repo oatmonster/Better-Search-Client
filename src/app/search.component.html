@@ -34,11 +34,11 @@
         <div class="col text-right">
           <div class="dropdown">
             <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">
-              {{ sortings.get(searchForm.value.sortBy) }}
+              {{ sortings.get(currentState?.sortBy) }}
             </button>
             <div class="dropdown-menu dropdown-menu-right">
               <button class="dropdown-item" type="button" *ngFor="let sort of sortings | keyvalue" (click)="search( { newSort: sort.key } )"
-                [ngClass]="{ active: searchForm.value.sortBy == sort.key }">
+                [ngClass]="{ active: currentState?.sortBy == sort.key }">
                 {{ sort.value }}
               </button>
             </div>
@@ -50,12 +50,12 @@
         <div class="col">
           <div class="dropdown">
             <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">
-              {{ conditions?.has(searchForm.value.condition) ? conditions?.get(searchForm.value.condition)[0] :
+              {{ conditions?.has(currentState?.condition) ? conditions?.get(currentState?.condition)[0] :
               '' }}
             </button>
             <div class="dropdown-menu">
               <button class="dropdown-item" type="button" *ngFor="let condition of conditions | keyvalue:sortMapInOrder"
-                (click)="search( { newCondition: condition.key } )" [ngClass]="{ active: searchForm.value.condition == condition.key }">
+                (click)="search( { newCondition: condition.key } )" [ngClass]="{ active: currentState?.condition == condition.key }">
                 {{ condition.value[0] }}
               </button>
             </div>
@@ -77,16 +77,16 @@
     </div>
     <nav *ngIf="pages.length > 0">
       <ul class="pagination justify-content-center">
-        <li class="page-item" [ngClass]="{ disabled: searchForm.value.page == 1 }">
-          <button class="page-link" type="button" (click)="search( { newPage: searchForm.value.page - 1 } )">
+        <li class="page-item" [ngClass]="{ disabled: currentState?.page == 1 }">
+          <button class="page-link" type="button" (click)="search( { newPage: currentState?.page - 1 } )">
             <span>&laquo;</span>
           </button>
         </li>
-        <li class="page-item" *ngFor="let page of pages" [ngClass]="{ 'active': searchForm.value.page == page, 'd-none': searchForm.value.page != page, 'd-md-block': searchForm.value.page != page }">
-          <button class="page-link" type="button" [attr.disabled]="searchForm.value.page == page ? true : null" (click)="search( {newPage: page } )">{{page}}</button>
+        <li class="page-item" *ngFor="let page of pages" [ngClass]="{ 'active': currentState?.page == page, 'd-none': currentState?.page != page, 'd-md-block': currentState?.page != page }">
+          <button class="page-link" type="button" [attr.disabled]="currentState?.page == page ? true : null" (click)="search( {newPage: page } )">{{page}}</button>
         </li>
-        <li class="page-item" [ngClass]="{ disabled: searchForm.value.page == 100 }">
-          <button class="page-link" type="button" (click)="search( { newPage: searchForm.value.page + 1 } )">
+        <li class="page-item" [ngClass]="{ disabled: currentState?.page == 100 }">
+          <button class="page-link" type="button" (click)="search( { newPage: currentState?.page + 1 } )">
             <span>&raquo;</span>
           </button>
         </li>
