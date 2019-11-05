@@ -8,27 +8,25 @@
             <input formControlName="query" type="text" class="form-control border-right-0" placeholder="Search">
             <div class="input-group-append">
               <button class="btn btn-white border-input dropdown-toggle" data-flip="false" type="button" data-toggle="dropdown">
-                {{ categories?.has( searchForm.value.category ) ? categories?.get( searchForm.value.category ) : 'All
+                {{ categories?.has( searchForm.value.category ) ? categories?.get( searchForm.value.category )[0] :
+                'All
                 Categories' }} </button>
               <div class="dropdown-menu category-dropdown">
-                <div>
-                  <button class="dropdown-item" type="button" (click)="searchForm.patchValue( {category: category.key } )">All
-                    Categories</button>
-                </div>
-                <button class="dropdown-item" type="button" *ngFor="let category of categories | keyvalue:sortByValue"
-                  (click)="searchForm.patchValue( {category: category.key } )" [ngClass]="{ active: searchForm.value.category == category.key }">{{category.value}}</button>
+                <button class="dropdown-item" type="button" (click)="searchForm.patchValue( {category: '' } )">All
+                  Categories</button>
+                <button class="dropdown-item" type="button" *ngFor="let category of categories | keyvalue:sortCategoriesInOrder"
+                  (click)="searchForm.patchValue( {category: category.key } )" [ngClass]="{ active: searchForm.value.category == category.key }">{{category.value[0]}}</button>
               </div>
             </div>
           </div>
-          <!-- <div><input formControlName="query" type="text" class="form-control" placeholder="Search"></div> -->
         </div>
         <div class="col-auto">
           <button type="submit" class="btn btn-primary">Search</button>
         </div>
       </div>
       <div class="form-row form-group">
+        <!-- Listing Type -->
         <div class="col">
-          <!-- Listing Type -->
           <div class="btn-group">
             <button class="btn btn-light" type="button" *ngFor="let listType of types | keyvalue" (click)="search( { newListType: listType.key } )"
               [ngClass]="{ active: searchForm.value.listType == listType.key }">{{ listType.value }}</button>
@@ -41,6 +39,22 @@
               {{ sortings.get(searchForm.value.sortBy) }}
             </button>
             <div class="dropdown-menu dropdown-menu-right">
+              <button class="dropdown-item" type="button" *ngFor="let sort of sortings | keyvalue" (click)="search( { newSort: sort.key } )"
+                [ngClass]="{ active: searchForm.value.sortBy == sort.key }">
+                {{ sort.value }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-row form-group">
+        <!-- Item Conditoin -->
+        <div class="col">
+          <div class="dropdown">
+            <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">
+              {{ sortings.get(searchForm.value.sortBy) }}
+            </button>
+            <div class="dropdown-menu">
               <button class="dropdown-item" type="button" *ngFor="let sort of sortings | keyvalue" (click)="search( { newSort: sort.key } )"
                 [ngClass]="{ active: searchForm.value.sortBy == sort.key }">
                 {{ sort.value }}
