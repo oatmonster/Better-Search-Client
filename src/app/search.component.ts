@@ -29,8 +29,14 @@ export class SearchComponent implements OnInit {
     [ 2, 'Accepts Offers' ],
     [ 3, 'Auctions' ]
   ] );
+  conditions = new Map( [
+    [ 'New', 'New' ],
+    [ 'Used', 'Used' ],
+    [ 'Unspecified', 'Unspecified' ]
+  ] );
   categories: Map<number, string>;
   everythingElseID: number;
+
 
   searchForm = new FormGroup( {
     query: new FormControl( '' ),
@@ -83,12 +89,17 @@ export class SearchComponent implements OnInit {
 
   ngOnInit() {
 
-    this.apiService.getCategories().subscribe( res => {
+    this.apiService.getBaseCategories().subscribe( res => {
       if ( res.Ack[ 0 ] === 'Success' ) {
         this.categories = new Map(
-          res.CategoryArray[ 0 ].Category.map( obj => [ +obj.CategoryID, obj.CategoryName ] )
+          res.CategoryArray[ 0 ].Category.map( obj => {
+            if ( obj.CategoryName == 'Everything Else' ) this.everythingElseID = obj.CategoryID;
+            return [ +obj.CategoryID, obj.CategoryName ];
+          } )
         );
+        this.categories.delete( this.everythingElseID );
       }
+
     } );
 
     this.activatedRoute.paramMap.subscribe( params => {
@@ -127,6 +138,7 @@ export class SearchComponent implements OnInit {
 
           this.setPages( +this.pagination.pageNumber[ 0 ], Math.min( 100, +this.pagination.totalPages[ 0 ] ), 8 );
           window.scroll( 0, 0 );
+          console.log( this.searchForm.value );
         } else {
           console.log( 'No Results' );
         }
