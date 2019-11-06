@@ -13,7 +13,7 @@ import { ApiService } from './api.service';
 
     .carousel-item {
       transition: 0.2s ease-in-out left;
-  }
+    }
   `]
 } )
 export class ItemThumbnailComponent implements OnInit {
