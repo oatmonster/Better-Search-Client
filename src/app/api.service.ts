@@ -28,9 +28,9 @@ export class ApiService {
       options.params = options.params.set( 'condition', queryForm.condition );
     }
 
-    return this.httpClient.get( environment.baseUrl + 'search', options ).pipe( tap( res =>
-      console.log( 'Search Items Response: ', res )
-    ) );
+    return this.httpClient.get( environment.baseUrl + 'search', options ).pipe( tap( res => {
+      //console.log( 'Search Items Response: ', res );
+    } ) );
   }
 
   getItem( id: string ): any {
@@ -41,7 +41,7 @@ export class ApiService {
 
   getBaseCategories(): any {
     return this.httpClient.get( environment.baseUrl + 'category' ).pipe( tap( res => {
-      console.log( 'Categories Response: ', res );
+      //console.log( 'Categories Response: ', res );
     } ) );
   }
 
