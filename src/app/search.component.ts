@@ -90,23 +90,25 @@ export class SearchComponent implements OnInit {
   }
 
   updateConditions() {
-    this.conditions.clear();
-    this.conditions.set( '0', [ 'Any Condition', '0' ] );
+    var conditions = new Map();
+    conditions.set( '0', [ 'Any Condition', '0' ] );
     if ( this.searchForm.value.category == '0' ) {
-      this.conditions.set( 'New', [ 'New', '1' ] );
-      this.conditions.set( 'Used', [ 'Used', '2' ] );
-      this.conditions.set( 'Unspecified', [ 'Unspecified', '3' ] );
+      conditions.set( 'New', [ 'New', '1' ] );
+      conditions.set( 'Used', [ 'Used', '2' ] );
+      conditions.set( 'Unspecified', [ 'Unspecified', '3' ] );
+      this.conditions = conditions;
     } else {
       this.apiService.getCategoryConditions( this.searchForm.value.category ).subscribe( res => {
         if ( res.Category != undefined ) {
           res.Category[ 0 ].ConditionValues[ 0 ].Condition.forEach( ( element, index ) => {
-            this.conditions.set( element.ID[ 0 ], [ element.DisplayName[ 0 ], index ] );
+            conditions.set( element.ID[ 0 ], [ element.DisplayName[ 0 ], index ] );
           } );
-          this.conditions.set( 'Unspecified', [ 'Unspecified', res.Category[ 0 ].ConditionValues[ 0 ].Condition.length + 1 ] );
+          conditions.set( 'Unspecified', [ 'Unspecified', res.Category[ 0 ].ConditionValues[ 0 ].Condition.length + 1 ] );
         } else {
-          this.conditions.set( 'Used', [ 'Used', '1' ] );
-          this.conditions.set( 'Unspecified', [ 'Unspecified', '2' ] );
+          conditions.set( 'Used', [ 'Used', '1' ] );
+          conditions.set( 'Unspecified', [ 'Unspecified', '2' ] );
         }
+        this.conditions = conditions;
       } );
     }
   }
@@ -140,11 +142,11 @@ export class SearchComponent implements OnInit {
         query.page = +params.get( 'page' );
       }
 
-      if ( params.has( 'sortBy' ) ) {
+      if ( params.has( 'sortBy' ) && this.sortings.has( params.get( 'sortBy' ) ) ) {
         query.sortBy = params.get( 'sortBy' );
       }
 
-      if ( params.has( 'listType' ) ) {
+      if ( params.has( 'listType' ) && this.types.has( params.get( 'listType' ) ) ) {
         query.listType = params.get( 'listType' );
       }
 
