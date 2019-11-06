@@ -1,6 +1,6 @@
-import { Component } from "@angular/core";
-import { LoadingService } from "./loading.service";
-import { trigger, transition, style, animate } from '@angular/animations'
+import { Component } from '@angular/core';
+import { LoadingService } from './loading.service';
+import { fadeOut } from './animations';
 
 @Component( {
   selector: 'loading',
@@ -17,18 +17,7 @@ import { trigger, transition, style, animate } from '@angular/animations'
     }
   ` ],
   animations: [
-    trigger(
-      'fadeOut',
-      [
-        transition(
-          ':leave',
-          [
-            style( { opacity: 1 } ),
-            animate( '500ms ease-in', style( { opacity: 0 } ) )
-          ]
-        )
-      ]
-    )
+
   ]
 } )
 export class LoadingComponent {
