@@ -6,7 +6,7 @@ import { fadeOut } from './animations';
   selector: 'loading',
   template: `
     <div class="progress loading" *ngIf="loadingService.getVisible()" [@fadeOut]>
-      <div class="progress-bar" role="progressbar" [style.width.%]="loadingService.getWidth()"></div>
+      <div class="progress-bar bg-warning rounded-0" role="progressbar" [style.width.%]="loadingService.getWidth()"></div>
     </div>
   `,
   styles: [ `
@@ -16,9 +16,7 @@ import { fadeOut } from './animations';
       z-index: 10000;
     }
   ` ],
-  animations: [
-
-  ]
+  animations: [ fadeOut ]
 } )
 export class LoadingComponent {
   constructor( private loadingService: LoadingService ) { }

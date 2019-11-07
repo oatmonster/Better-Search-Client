@@ -33,17 +33,11 @@ export class LoadingInterceptor implements HttpInterceptor {
     this.reqTotal++
     this.loadingService.setWidth( this.reqCompleted / this.reqTotal * 100 );
 
-    console.log( `intercepted request ${this.reqSent}` );
-
-
     return next.handle( req ).pipe( finalize( () => {
       this.reqCompleted++;
       this.loadingService.setWidth( this.reqCompleted / this.reqTotal * 100 );
 
-      console.log( `received response ${this.reqCompleted} out of ${this.reqTotal}` );
-
       if ( this.reqCompleted >= this.reqTotal ) {
-        console.log( 'loading complete' );
         this.setComplete();
       }
     } ) );

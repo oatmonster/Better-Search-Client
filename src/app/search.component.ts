@@ -5,11 +5,13 @@ import { FormGroup, FormControl } from '@angular/forms';
 
 import { ApiService } from './api.service';
 import { IQuery } from './api.service';
+import { staggerList } from './animations';
 
 @Component( {
   selector: 'search',
   templateUrl: 'search.component.html',
-  styleUrls: [ 'search.component.css' ]
+  styleUrls: [ 'search.component.css' ],
+  animations: [ staggerList ]
 } )
 export class SearchComponent implements OnInit {
 
@@ -123,7 +125,6 @@ export class SearchComponent implements OnInit {
         );
         this.categories.set( '0', [ 'All Categories', '-1' ] );
       }
-      console.log( this.categories );
     } );
   }
 
