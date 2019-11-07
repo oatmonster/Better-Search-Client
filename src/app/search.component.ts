@@ -72,7 +72,7 @@ export class SearchComponent implements OnInit {
     if ( newCategory != this.currentState.category ) newCondition = '0';
     if ( +newCondition != 0 ) params.condition = newCondition;
 
-    this.router.navigate( [ '/search/', params ] );
+    this.router.navigate( [ 'search', params ] );
   }
 
 
@@ -137,7 +137,11 @@ export class SearchComponent implements OnInit {
     this.updateCategories();
 
     this.activatedRoute.paramMap.subscribe( params => {
-      var query: IQuery = { query: params.get( 'query' ) }
+      if ( !params.has( 'query' ) || params.get( 'query' ) == '' ) {
+        this.router.navigateByUrl( '' );
+      }
+
+      var query: IQuery = { query: params.get( 'query' ) || '' }
 
       if ( params.has( 'page' ) && +params.get( 'page' ) <= 100 && +params.get( 'page' ) >= 1 ) {
         query.page = +params.get( 'page' );
@@ -162,28 +166,30 @@ export class SearchComponent implements OnInit {
       console.log( query );
 
       this.apiService.searchItems( query ).subscribe( res => {
+        this.currentState = {
+          query: query.query,
+          page: 1,
+          sortBy: query.sortBy || '0',
+          listType: query.listType || '0',
+          category: query.category || '0',
+          condition: query.condition || '0'
+        };
+
         if ( res.ack[ 0 ] == 'Success' ) {
           this.items = res.searchResult[ 0 ].item || [];
           this.pagination = res.paginationOutput[ 0 ];
 
-          this.currentState = {
-            query: query.query,
-            page: +this.pagination.pageNumber,
-            sortBy: query.sortBy || '0',
-            listType: query.listType || '0',
-            category: query.category || '0',
-            condition: query.condition || '0'
-          };
-
-          this.searchForm.patchValue( this.currentState );
-
+          this.currentState.page = +this.pagination.pageNumber;
           this.setPages( +this.pagination.pageNumber[ 0 ], Math.min( 100, +this.pagination.totalPages[ 0 ] ), 8 );
-          this.updateConditions();
-          window.scroll( 0, 0 );
 
         } else {
-          console.log( 'No Results' );
+          console.log( 'Invalid Search' );
         }
+
+        this.searchForm.patchValue( this.currentState );
+        this.updateConditions();
+        window.scroll( 0, 0 );
+
       } );
     } );
   }

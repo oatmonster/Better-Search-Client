@@ -1,6 +1,7 @@
 import { ItemDetailComponent } from './item-detail.component';
 import { SearchComponent } from './search.component';
 import { NotFoundComponent } from './not-found.component';
+import { HomeComponent } from './home/home.component';
 
 export const appRoutes = [
   {
@@ -12,13 +13,12 @@ export const appRoutes = [
     component: SearchComponent,
   },
   {
-    path: '',
-    redirectTo: '/search',
-    pathMatch: 'full'
-  },
-  {
     path: '404',
     component: NotFoundComponent
+  },
+  {
+    path: '',
+    component: HomeComponent,
   },
   {
     path: '**',
