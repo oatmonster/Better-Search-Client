@@ -10,7 +10,7 @@
             <div class="input-group-append">
               <button class="btn btn-white border-input dropdown-toggle" data-flip="false" type="button" data-toggle="dropdown">
                 {{ categories?.has( searchForm.value.category ) ? categories?.get( searchForm.value.category )[0] :
-                '' }}
+                'All Categories' }}
               </button>
               <div class="dropdown-menu category-dropdown">
                 <button class="dropdown-item" type="button" *ngFor="let category of categories | keyvalue:sortMapInOrder"
@@ -35,7 +35,7 @@
         <div class="col text-right">
           <div class="dropdown">
             <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">
-              {{ sortings.get( currentState?.sortBy ) }}
+              {{ sortings.get( currentState?.sortBy ) || 'Best Match'}}
             </button>
             <div class="dropdown-menu dropdown-menu-right">
               <button class="dropdown-item" type="button" *ngFor="let sort of sortings | keyvalue" (click)="search( { newSort: sort.key } )"
@@ -52,7 +52,7 @@
           <div class="dropdown">
             <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">
               {{ conditions?.has(currentState?.condition) ? conditions?.get(currentState?.condition)[0] :
-              '' }}
+              'Any Condition' }}
             </button>
             <div class="dropdown-menu">
               <button class="dropdown-item" type="button" *ngFor="let condition of conditions | keyvalue:sortMapInOrder"
