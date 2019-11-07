@@ -29,25 +29,25 @@ export class ApiService {
     }
 
     return this.httpClient.get( environment.baseUrl + 'search', options ).pipe( tap( res => {
-      //console.log( 'Search Items Response: ', res );
+      // console.log( 'Search Items Response: ', res );
     } ) );
   }
 
   getItem( id: string ): any {
     return this.httpClient.get( environment.baseUrl + 'item/' + id ).pipe( tap( res => {
-      console.log( 'Get Item Response: ', res );
+      // console.log( 'Get Item Response: ', res );
     } ) );
   }
 
   getBaseCategories(): any {
     return this.httpClient.get( environment.baseUrl + 'category' ).pipe( tap( res => {
-      //console.log( 'Categories Response: ', res );
+      // console.log( 'Categories Response: ', res );
     } ) );
   }
 
   getCategoryConditions( id: string ): any {
     return this.httpClient.get( environment.baseUrl + 'condition/' + id ).pipe( tap( res => {
-      console.log( 'Category Condition Response: ', res );
+      // console.log( 'Category Condition Response: ', res );
     } ) );
   }
 }
