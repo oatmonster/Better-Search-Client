@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { ApiService } from './api.service';
+import { ApiService } from '../common/api.service';
 
 @Component( {
   selector: 'item-detail',

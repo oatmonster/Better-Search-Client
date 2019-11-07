@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
+
 import { LoadingService } from './loading.service';
-import { fadeOut } from './animations';
+import { fadeOut } from '../common/animations';
 
 @Component( {
   selector: 'loading',

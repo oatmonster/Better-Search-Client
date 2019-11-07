@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ApiService } from './api.service';
+
+import { ApiService } from '../common/api.service';
 
 @Component( {
   selector: 'item-thumbnail',
