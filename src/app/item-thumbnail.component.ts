@@ -7,7 +7,7 @@ import { ApiService } from './api.service';
   styles: [ `
     .thumbnail {
       object-fit: cover;
-      width: 150px;
+      width: 100%;
       height: 150px;
     }
 
