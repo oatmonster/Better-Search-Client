@@ -3,9 +3,8 @@ import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl } from '@angular/forms';
 
-import { ApiService } from './api.service';
-import { IQuery } from './api.service';
-import { staggerList } from './animations';
+import { ApiService, IQuery } from '../common/api.service';
+import { staggerList } from '../common/animations';
 
 @Component( {
   selector: 'search',

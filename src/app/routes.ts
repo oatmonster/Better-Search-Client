@@ -1,6 +1,6 @@
-import { ItemDetailComponent } from './item-detail.component';
-import { SearchComponent } from './search.component';
-import { NotFoundComponent } from './not-found.component';
+import { ItemDetailComponent } from './item-detail/item-detail.component';
+import { SearchComponent } from './search/search.component';
+import { NotFoundComponent } from './not-found/not-found.component';
 import { HomeComponent } from './home/home.component';
 
 export const appRoutes = [

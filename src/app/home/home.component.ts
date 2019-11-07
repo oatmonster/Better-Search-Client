@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl } from '@angular/forms';
 
-import { IQuery } from '../api.service';
+import { IQuery } from '../common/api.service';
 
 @Component( {
   selector: 'home',
