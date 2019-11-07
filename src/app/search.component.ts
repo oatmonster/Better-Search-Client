@@ -72,7 +72,7 @@ export class SearchComponent implements OnInit {
     if ( newCategory != this.currentState.category ) newCondition = '0';
     if ( +newCondition != 0 ) params.condition = newCondition;
 
-    this.router.navigate( [ '/search', params ] );
+    this.router.navigate( [ '/search/', params ] );
   }
 
 

@@ -13,7 +13,8 @@ export const appRoutes = [
   },
   {
     path: '',
-    component: SearchComponent,
+    redirectTo: '/search',
+    pathMatch: 'full'
   },
   {
     path: '404',
