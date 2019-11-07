@@ -26,7 +26,7 @@ export class LoadingInterceptor implements HttpInterceptor {
     if ( this.reqSent === 0 ) {
       this.startTimeout = setTimeout( () => {
         this.loadingService.start();
-      }, 500 );
+      }, 200 );
     }
 
     this.reqSent++;
