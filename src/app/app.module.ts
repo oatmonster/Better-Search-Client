@@ -6,18 +6,20 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 import { ApiService } from './api.service';
+import { LoadingService } from './loading.service';
+
 import { AppComponent } from './app.component';
 import { SearchComponent } from './search.component';
 import { ItemThumbnailComponent } from './item-thumbnail.component';
 import { ItemDetailComponent } from './item-detail.component';
 import { NotFoundComponent } from './not-found.component';
+import { LoadingComponent } from './loading.component';
+import { HomeComponent } from './home/home.component';
 
 
 import { LoadingInterceptor } from './loading.interceptor';
 
 import { appRoutes } from './routes';
-import { LoadingService } from './loading.service';
-import { LoadingComponent } from './loading.component';
 
 @NgModule( {
   imports: [
@@ -35,6 +37,7 @@ import { LoadingComponent } from './loading.component';
     ItemDetailComponent,
     NotFoundComponent,
     LoadingComponent,
+    HomeComponent,
   ],
   providers: [
     ApiService,

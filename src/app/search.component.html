@@ -35,7 +35,7 @@
         <div class="col text-right">
           <div class="dropdown">
             <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">
-              {{ sortings.get(currentState?.sortBy) }}
+              {{ sortings.get( currentState?.sortBy ) }}
             </button>
             <div class="dropdown-menu dropdown-menu-right">
               <button class="dropdown-item" type="button" *ngFor="let sort of sortings | keyvalue" (click)="search( { newSort: sort.key } )"
