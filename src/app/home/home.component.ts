@@ -18,8 +18,6 @@ export class HomeComponent implements OnInit {
   constructor( private router: Router ) { }
 
   onSubmit() {
-    console.log( '"' + this.searchForm.value.query + '"' );
-    console.log( '"' + this.searchForm.value.query.trim() + '"' );
     this.searchForm.patchValue( {
       query: this.searchForm.value.query.trim()
     } );
