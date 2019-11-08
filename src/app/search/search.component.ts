@@ -2,9 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl } from '@angular/forms';
+import { forkJoin } from 'rxjs';
 
 import { ApiService, IQuery } from '../common/api.service';
 import { staggerList } from '../common/animations';
+import { defaultIfEmpty } from 'rxjs/operators';
 
 @Component( {
   selector: 'search',
@@ -62,16 +64,21 @@ export class SearchComponent implements OnInit {
     newCategory = this.searchForm.value.category,
     newCondition = this.searchForm.value.condition
   } = {} ) {
-    var params: IQuery = { query: this.searchForm.value.query }
-    if ( +newSort > 0 ) params.sortBy = newSort;
-    if ( +newListType > 0 ) params.listType = newListType;
-    if ( newPage > 1 ) params.page = newPage;
-    if ( newCondition != this.currentState.condition ) newCategory = this.currentState.category;
-    if ( +newCategory > 0 ) params.category = newCategory;
-    if ( newCategory != this.currentState.category ) newCondition = '0';
-    if ( +newCondition != 0 ) params.condition = newCondition;
+    if ( this.searchForm.value.query.trim() == '' ) {
+      this.router.navigateByUrl( '' );
+    } else {
+      var params: IQuery = { query: this.searchForm.value.query.trim() };
+      if ( +newSort > 0 ) params.sortBy = newSort;
+      if ( +newListType > 0 ) params.listType = newListType;
+      if ( newPage > 1 ) params.page = newPage;
+      if ( newCondition != this.currentState.condition ) newCategory = this.currentState.category;
+      if ( +newCategory > 0 ) params.category = newCategory;
+      if ( newCategory != this.currentState.category ) newCondition = '0';
+      if ( +newCondition != 0 ) params.condition = newCondition;
 
-    this.router.navigate( [ 'search', params ] );
+      this.router.navigate( [ 'search', params ] );
+    }
+
   }
 
 
@@ -136,11 +143,11 @@ export class SearchComponent implements OnInit {
     this.updateCategories();
 
     this.activatedRoute.paramMap.subscribe( params => {
-      if ( !params.has( 'query' ) || params.get( 'query' ) == '' ) {
+      if ( !params.has( 'query' ) || params.get( 'query' ).trim() == '' ) {
         this.router.navigateByUrl( '' );
       }
 
-      var query: IQuery = { query: params.get( 'query' ) || '' }
+      var query: IQuery = { query: params.get( 'query' ) }
 
       if ( params.has( 'page' ) && +params.get( 'page' ) <= 100 && +params.get( 'page' ) >= 1 ) {
         query.page = +params.get( 'page' );
@@ -154,42 +161,54 @@ export class SearchComponent implements OnInit {
         query.listType = params.get( 'listType' );
       }
 
-      if ( params.has( 'category' ) ) {
-        query.category = params.get( 'category' );
+      // Asynchronous validations
+      var observables: any = {
       }
 
-      if ( params.has( 'condition' ) ) {
-        query.condition = params.get( 'condition' );
+      if ( params.has( 'category' ) && params.get( 'category' ) !== '0' ) {
+        observables.category = this.apiService.isValidCategory( params.get( 'category' ) );
       }
 
-      console.log( query );
+      if ( params.has( 'condition' ) && params.get( 'condition' ) !== '0' ) {
+        observables.condition = this.apiService.isValidCondition( params.get( 'category' ) || '0', params.get( 'condition' ) )
+      }
 
-      this.apiService.searchItems( query ).subscribe( res => {
-        this.currentState = {
-          query: query.query,
-          page: 1,
-          sortBy: query.sortBy || '0',
-          listType: query.listType || '0',
-          category: query.category || '0',
-          condition: query.condition || '0'
-        };
+      forkJoin( observables ).pipe<any>( defaultIfEmpty( {} ) ).subscribe( resDict => {
+        console.log( 'Async Validation Results:', resDict );
+        if ( resDict.category ) query.category = params.get( 'category' );
+        if ( resDict.condition ) query.condition = params.get( 'condition' );
 
-        if ( res.ack[ 0 ] == 'Success' ) {
-          this.items = res.searchResult[ 0 ].item || [];
-          this.pagination = res.paginationOutput[ 0 ];
+        console.log( query );
 
-          this.currentState.page = +this.pagination.pageNumber;
-          this.setPages( +this.pagination.pageNumber[ 0 ], Math.min( 100, +this.pagination.totalPages[ 0 ] ), 8 );
+        this.apiService.searchItems( query ).subscribe( res => {
+          this.currentState = {
+            query: query.query,
+            page: 1,
+            sortBy: query.sortBy || '0',
+            listType: query.listType || '0',
+            category: query.category || '0',
+            condition: query.condition || '0'
+          };
 
-        } else {
-          console.log( 'Invalid Search' );
-        }
+          if ( res.ack[ 0 ] == 'Success' ) {
+            this.items = res.searchResult[ 0 ].item || [];
+            this.pagination = res.paginationOutput[ 0 ];
 
-        this.searchForm.patchValue( this.currentState );
-        this.updateConditions();
-        window.scroll( 0, 0 );
+            this.currentState.page = +this.pagination.pageNumber;
+            this.setPages( +this.pagination.pageNumber[ 0 ], Math.min( 100, +this.pagination.totalPages[ 0 ] ), 8 );
 
+          } else {
+            console.log( 'Invalid Search' );
+          }
+
+          this.searchForm.patchValue( this.currentState );
+          this.updateConditions();
+          window.scroll( 0, 0 );
+
+        } );
       } );
+
+
     } );
   }
 }
