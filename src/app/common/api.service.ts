@@ -34,8 +34,10 @@ export class ApiService {
     } ) );
   }
 
-  getItem( id: string ): Observable<any> {
-    return this.httpClient.get( environment.baseUrl + 'item/' + id ).pipe( tap( res => {
+  getItem( id: string, { description = false } = {} ): Observable<any> {
+    var url = environment.baseUrl + 'item/' + id;
+    if ( description = true ) url += '/description';
+    return this.httpClient.get( url ).pipe( tap( res => {
       // console.log( 'Get Item Response:', res );
     } ) );
   }
