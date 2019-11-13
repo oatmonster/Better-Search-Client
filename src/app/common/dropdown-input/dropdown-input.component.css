@@ -1,0 +1,10 @@
+.input-append {
+  border: 1px solid #ced4da;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.dropdown-menu {         
+  max-height: 400px;
+  overflow-y: auto;
+}
