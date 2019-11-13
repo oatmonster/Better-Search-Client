@@ -1,0 +1,12 @@
+<div class="dropdown">
+  <button class="btn dropdown-toggle" [ngClass]="{ 'input-append': inputAppend, 'btn-white': inputAppend, 'btn-light ': !inputAppend }"
+    type="button" data-toggle="dropdown">
+    {{ selected() }}
+  </button>
+  <div class="dropdown-menu" [ngClass]="{ 'dropdown-menu-right': menuRight }">
+    <button class="dropdown-item" [attr.type]="submit ? 'submit' : 'button'" *ngFor="let item of items | keyvalue:sortMapInOrder"
+      [ngClass]="{ 'active': value == item.key }" (click)="selectItem(item)">
+      {{ item.value[0] }}
+    </button>
+  </div>
+</div>
