@@ -1,0 +1,18 @@
+<div id="gallery" class="carousel slide" data-ride="carousel" data-interval="false">
+  <ol class="carousel-indicators">
+    <li *ngFor="let image of items; first as isFirst; index as i" [ngClass]="{ active : isFirst }" data-target="#gallery"
+      [attr.data-slide-to]="i"></li>
+  </ol>
+  <div class="carousel-inner bg-secondary">
+    <div class="carousel-item" *ngFor="let image of items; first as isFirst" [ngClass]="{ active : isFirst }">
+      <img src="{{image}}" alt="{{image}}">
+    </div>
+  </div>
+  <a class="carousel-control-prev" *ngIf="items?.length > 1" href="#gallery" role="button" data-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+  </a>
+
+  <a class="carousel-control-next" *ngIf="items?.length > 1" href="#gallery" role="button" data-slide="next">
+    <span class="carousel-control-next-icon"></span>
+  </a>
+</div>
