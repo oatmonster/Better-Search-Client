@@ -3,10 +3,11 @@ import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl } from '@angular/forms';
 import { forkJoin } from 'rxjs';
+import { defaultIfEmpty } from 'rxjs/operators';
 
 import { ApiService, IQuery } from '../common/api.service';
 import { staggerList } from '../common/animations';
-import { defaultIfEmpty } from 'rxjs/operators';
+
 
 @Component( {
   selector: 'search',
@@ -16,6 +17,7 @@ import { defaultIfEmpty } from 'rxjs/operators';
 } )
 export class SearchComponent implements OnInit {
 
+  totalPages: number;
   items: any[];
   pagination: any = {};
   pages: number[] = [];
@@ -33,11 +35,11 @@ export class SearchComponent implements OnInit {
     [ '3', 'Auctions' ]
   ] );
   conditions = new Map( [
-    [ 'New', [ 'New', '0' ] ],
-    [ 'Used', [ 'Used', '1' ] ],
-    [ 'Unspecified', [ 'Unspecified', '2' ] ]
+    [ 'New', 'New' ],
+    [ 'Used', 'Used' ],
+    [ 'Unspecified', 'Unspecified' ]
   ] );
-  categories: Map<string, string[]>;
+  categories: Map<string, string>;
 
   searchForm = new FormGroup( {
     query: new FormControl( '' ),
@@ -54,8 +56,7 @@ export class SearchComponent implements OnInit {
     private apiService: ApiService,
     private router: Router,
     private activatedRoute: ActivatedRoute
-  ) {
-  };
+  ) { };
 
   search( {
     newSort = this.searchForm.value.sortBy,
@@ -81,61 +82,46 @@ export class SearchComponent implements OnInit {
 
   }
 
-
-  setPages( currentPage: number, totalPages: number, toDisplay: number ) {
-    var minPage = currentPage - Math.floor( toDisplay / 2 );
-    var maxPage = currentPage + Math.floor( toDisplay / 2 );
-    var extraLeft = Math.max( minPage * -1 + 1, 0 );
-    var extraRight = Math.max( maxPage - totalPages, 0 );
-
-    maxPage = Math.min( maxPage + extraLeft, totalPages );
-    minPage = Math.max( 1, minPage - extraRight );
-
-    this.pages = [];
-    for ( var i = minPage; i <= maxPage; i++ ) {
-      this.pages.push( i );
-    }
-  }
-
   updateConditions() {
     var conditions = new Map();
-    conditions.set( '0', [ 'Any Condition', '0' ] );
+    conditions.set( '0', 'Any Condition' );
     if ( this.searchForm.value.category == '0' ) {
-      conditions.set( 'New', [ 'New', '1' ] );
-      conditions.set( 'Used', [ 'Used', '2' ] );
-      conditions.set( 'Unspecified', [ 'Unspecified', '3' ] );
+      conditions.set( 'New', 'New' );
+      conditions.set( 'Used', 'Used' );
+      conditions.set( 'Unspecified', 'Unspecified' );
       this.conditions = conditions;
     } else {
       this.apiService.getCategoryConditions( this.searchForm.value.category ).subscribe( res => {
         if ( res.Category != undefined ) {
           res.Category[ 0 ].ConditionValues[ 0 ].Condition.forEach( ( element, index ) => {
-            conditions.set( element.ID[ 0 ], [ element.DisplayName[ 0 ], index ] );
+            conditions.set( element.ID[ 0 ], element.DisplayName[ 0 ] );
           } );
-          conditions.set( 'Unspecified', [ 'Unspecified', res.Category[ 0 ].ConditionValues[ 0 ].Condition.length + 1 ] );
+          conditions.set( 'Unspecified', 'Unspecified' );
         } else {
-          conditions.set( 'Used', [ 'Used', '1' ] );
-          conditions.set( 'Unspecified', [ 'Unspecified', '2' ] );
+          conditions.set( 'Used', 'Used' );
+          conditions.set( 'Unspecified', 'Unspecified' );
         }
         this.conditions = conditions;
       } );
     }
   }
 
+  submit() {
+    console.log( 'Form Value on Submit:', this.searchForm.value );
+    this.search();
+  }
+
   updateCategories() {
     this.apiService.getBaseCategories().subscribe( res => {
       if ( res.Ack[ 0 ] === 'Success' ) {
-        this.categories = new Map(
-          res.CategoryArray[ 0 ].Category.map( ( obj, i ) => {
-            return [ obj.CategoryID[ 0 ], [ obj.CategoryName[ 0 ], i ] ];
-          } )
-        );
-        this.categories.set( '0', [ 'All Categories', '-1' ] );
+        let categories = new Map();
+        categories.set( '0', 'All Categories' );
+        res.CategoryArray[ 0 ].Category.forEach( element => {
+          categories.set( element.CategoryID[ 0 ], element.CategoryName[ 0 ] );
+        } );
+        this.categories = categories;
       }
     } );
-  }
-
-  sortMapInOrder( a, b ) {
-    return +a.value[ 1 ] > +b.value[ 1 ] ? 1 : ( +b.value[ 1 ] > +a.value[ 1 ] ? -1 : 0 );
   }
 
   ngOnInit() {
@@ -174,11 +160,10 @@ export class SearchComponent implements OnInit {
       }
 
       forkJoin( observables ).pipe<any>( defaultIfEmpty( {} ) ).subscribe( resDict => {
-        console.log( 'Async Validation Results:', resDict );
         if ( resDict.category ) query.category = params.get( 'category' );
         if ( resDict.condition ) query.condition = params.get( 'condition' );
 
-        console.log( query );
+        console.log( 'Query from URL:', query );
 
         this.apiService.searchItems( query ).subscribe( res => {
           this.currentState = {
@@ -195,7 +180,7 @@ export class SearchComponent implements OnInit {
             this.pagination = res.paginationOutput[ 0 ];
 
             this.currentState.page = +this.pagination.pageNumber;
-            this.setPages( +this.pagination.pageNumber[ 0 ], Math.min( 100, +this.pagination.totalPages[ 0 ] ), 8 );
+            this.totalPages = Math.min( 100, +this.pagination.totalPages[ 0 ] );
 
           } else {
             console.log( 'Invalid Search' );

@@ -62,7 +62,7 @@ export class ApiService {
       } );
     }
     return this.httpClient.get<any>( environment.baseUrl + 'category/' + id ).pipe( tap( res => {
-      console.log( 'Valid Category Response:', res );
+      // console.log( 'Valid Category Response:', res );
     } ) ).pipe( map( res => {
       return res.CategoryCount[ 0 ] == 1;
     } ) );
@@ -96,9 +96,6 @@ export class ApiService {
         }
       } ) );
     }
-    // return this.httpClient.get( environment.baseUrl + 'category/' + categoryID + '/condition' ).pipe( tap( res => {
-    //   console.log( 'Valid Condition Response:', res );
-    // } ) );
   }
 }
 

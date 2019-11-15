@@ -1,4 +1,4 @@
-import { Component, Input, forwardRef } from '@angular/core';
+import { Component, Input, forwardRef, OnInit, OnChanges } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component( {
@@ -13,10 +13,10 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
     }
   ]
 } )
-export class DropdownInputComponent implements ControlValueAccessor {
+export class DropdownInputComponent implements ControlValueAccessor, OnInit, OnChanges {
 
   @Input()
-  items: Map<string, Array<string>>;
+  itemMap: Map<string, string>;
 
   @Input()
   defaultText: string = 'Select Item';
@@ -29,6 +29,8 @@ export class DropdownInputComponent implements ControlValueAccessor {
 
   @Input()
   inputAppend: boolean = false;
+
+  items: Map<string, Array<string>> = new Map();
 
   private onChange = ( _: any ) => { };
   private _value;
@@ -67,5 +69,24 @@ export class DropdownInputComponent implements ControlValueAccessor {
 
   sortMapInOrder( a, b ) {
     return +a.value[ 1 ] > +b.value[ 1 ] ? 1 : ( +b.value[ 1 ] > +a.value[ 1 ] ? -1 : 0 );
+  }
+
+  updateItems() {
+    if ( this.itemMap ) {
+      this.items.clear();
+      let index = 0;
+      this.itemMap.forEach( ( val, key ) => {
+        this.items.set( key, [ val, '' + index ] );
+        index++;
+      } );
+    }
+  }
+
+  ngOnChanges() {
+    this.updateItems();
+  }
+
+  ngOnInit() {
+    this.updateItems();
   }
 }
