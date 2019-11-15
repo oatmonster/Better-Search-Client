@@ -1,22 +1,14 @@
 <div class="container">
   <!-- Search Bar -->
-  <form [formGroup]="searchForm" (ngSubmit)="search( { newPage: 1 } )">
+  <form [formGroup]="searchForm" (ngSubmit)="submit()">
     <div>
       <!-- <div class="sticky-top bg-white"> -->
       <div class="form-row form-group">
         <div class="col">
           <div class="input-group">
             <input formControlName="query" type="text" class="form-control border-right-0" placeholder="Search">
-            <div class="input-group-append">
-              <button class="btn btn-white border-input dropdown-toggle" data-flip="false" type="button" data-toggle="dropdown">
-                {{ categories?.has( searchForm.value.category ) ? categories?.get( searchForm.value.category )[0] :
-                'All Categories' }}
-              </button>
-              <div class="dropdown-menu category-dropdown">
-                <button class="dropdown-item" type="button" *ngFor="let category of categories | keyvalue:sortMapInOrder"
-                  (click)="searchForm.patchValue( {category: category.key } )" [ngClass]="{ active: searchForm.value.category == category.key }">{{category.value[0]}}</button>
-              </div>
-            </div>
+            <dropdown-input *ngIf="categories" formControlName="category" [itemMap]="categories" [inputAppend]="true"
+              [defaultText]="'All Categories'"></dropdown-input>
           </div>
         </div>
         <div class="col-auto">
@@ -33,34 +25,13 @@
         </div>
         <!-- Sort Order -->
         <div class="col text-right">
-          <div class="dropdown">
-            <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">
-              {{ sortings.get( currentState?.sortBy ) || 'Best Match'}}
-            </button>
-            <div class="dropdown-menu dropdown-menu-right">
-              <button class="dropdown-item" type="button" *ngFor="let sort of sortings | keyvalue" (click)="search( { newSort: sort.key } )"
-                [ngClass]="{ active: currentState?.sortBy == sort.key }">
-                {{ sort.value }}
-              </button>
-            </div>
-          </div>
+          <dropdown-input formControlName="sortBy" [itemMap]="sortings" [submit]="true" [defaultText]="'Best Match'"></dropdown-input>
         </div>
       </div>
       <div class="form-row form-group">
         <!-- Item Condition -->
         <div class="col">
-          <div class="dropdown">
-            <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">
-              {{ conditions?.has(currentState?.condition) ? conditions?.get(currentState?.condition)[0] :
-              'Any Condition' }}
-            </button>
-            <div class="dropdown-menu">
-              <button class="dropdown-item" type="button" *ngFor="let condition of conditions | keyvalue:sortMapInOrder"
-                (click)="search( { newCondition: condition.key } )" [ngClass]="{ active: currentState?.condition == condition.key }">
-                {{ condition.value[0] }}
-              </button>
-            </div>
-          </div>
+          <dropdown-input formControlName="condition" [itemMap]="conditions" [submit]="true" [defaultText]="'Any Condition'"></dropdown-input>
         </div>
       </div>
     </div>
@@ -77,22 +48,6 @@
     <div *ngIf="pagination.totalEntries && +pagination?.totalEntries[0] == 0">
       <p>No Results :(</p>
     </div>
-    <nav *ngIf="pages.length > 0">
-      <ul class="pagination justify-content-center">
-        <li class="page-item" [ngClass]="{ disabled: currentState?.page == 1 }">
-          <button class="page-link" type="button" (click)="search( { newPage: currentState?.page - 1 } )">
-            <span>&laquo;</span>
-          </button>
-        </li>
-        <li class="page-item" *ngFor="let page of pages" [ngClass]="{ 'active': currentState?.page == page, 'd-none': currentState?.page != page, 'd-md-block': currentState?.page != page }">
-          <button class="page-link" type="button" [attr.disabled]="currentState?.page == page ? true : null" (click)="search( {newPage: page } )">{{page}}</button>
-        </li>
-        <li class="page-item" [ngClass]="{ disabled: currentState?.page == 100 }">
-          <button class="page-link" type="button" (click)="search( { newPage: currentState?.page + 1 } )">
-            <span>&raquo;</span>
-          </button>
-        </li>
-      </ul>
-    </nav>
+    <page-input formControlName="page" [totalPages]="totalPages" [currentPage]=[currentState?.page]></page-input>
   </form>
 </div>
