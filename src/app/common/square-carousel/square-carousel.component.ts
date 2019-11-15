@@ -8,10 +8,13 @@ import { Component, OnInit, Input } from '@angular/core';
 export class SquareCarouselComponent implements OnInit {
 
   @Input()
-  items: string[];
+  items: string[] = [];
 
   @Input()
   thumbnails: boolean = false;
+
+  @Input()
+  id: string = '';
 
   ngOnInit() {
 
