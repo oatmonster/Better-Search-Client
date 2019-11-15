@@ -23,7 +23,7 @@ export class ItemThumbnailComponent implements OnInit {
 
   expanded: boolean = false;
   fetched: boolean = false;
-  gallery: any = [];
+  gallery: string[] = [];
 
   constructor( private apiService: ApiService ) { }
 
