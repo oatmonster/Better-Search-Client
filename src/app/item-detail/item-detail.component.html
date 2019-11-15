@@ -1,12 +1,12 @@
 <div class="container">
   <div class="row">
     <div class="col">
-      <div *ngFor="let image of item?.PictureURL">
-        <img src={{image}} width="500px">
-      </div>
+      <!-- Gallery Carousel -->
+      <square-carousel [items]="item?.PictureURL"></square-carousel>
     </div>
     <div class="col">
       Other info here
     </div>
   </div>
+  <div [innerHTML]="item?.Description"></div>
 </div>
