@@ -17,6 +17,7 @@ import { LoadingComponent } from './loading/loading.component';
 import { HomeComponent } from './home/home.component';
 import { DropdownInputComponent } from './common/dropdown-input/dropdown-input.component'
 import { PageInputComponent } from './common/page-input/page-input.component'
+import { SquareCarouselComponent } from './common/square-carousel/square-carousel.component'
 
 import { LoadingInterceptor } from './loading/loading.interceptor';
 
@@ -41,6 +42,7 @@ import { appRoutes } from './routes';
     HomeComponent,
     DropdownInputComponent,
     PageInputComponent,
+    SquareCarouselComponent,
   ],
   providers: [
     ApiService,
