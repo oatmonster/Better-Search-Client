@@ -5,7 +5,9 @@
   </ol>
   <div class="carousel-inner bg-secondary">
     <div class="carousel-item" *ngFor="let image of items; first as isFirst" [ngClass]="{ active : isFirst }">
-      <img src="{{image}}" alt="{{image}}">
+      <div class="fill">
+        <img src="{{image}}" alt="{{image}}">
+      </div>
     </div>
   </div>
   <a class="carousel-control-prev" *ngIf="items?.length > 1" href="{{ '#gallery' + id }}" role="button" data-slide="prev">

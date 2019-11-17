@@ -107,7 +107,7 @@ export class SearchComponent implements OnInit {
   }
 
   submit() {
-    console.log( 'Form Value on Submit:', this.searchForm.value );
+    // console.log( 'Form Value on Submit:', this.searchForm.value );
     this.search();
   }
 
@@ -163,7 +163,7 @@ export class SearchComponent implements OnInit {
         if ( resDict.category ) query.category = params.get( 'category' );
         if ( resDict.condition ) query.condition = params.get( 'condition' );
 
-        console.log( 'Query from URL:', query );
+        // console.log( 'Query from URL:', query );
 
         this.apiService.searchItems( query ).subscribe( res => {
           this.currentState = {

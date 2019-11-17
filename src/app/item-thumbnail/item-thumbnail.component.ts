@@ -5,17 +5,7 @@ import { ApiService } from '../common/api.service';
 @Component( {
   selector: 'item-thumbnail',
   templateUrl: 'item-thumbnail.component.html',
-  styles: [ `
-    .thumbnail {
-      object-fit: cover;
-      width: 100%;
-      height: 150px;
-    }
-
-    .carousel-item {
-      transition: 0.2s ease-in-out left;
-    }
-  `]
+  styleUrls: [ 'item-thumbnail.component.css' ]
 } )
 export class ItemThumbnailComponent implements OnInit {
   @Input() item;
@@ -24,6 +14,7 @@ export class ItemThumbnailComponent implements OnInit {
   expanded: boolean = false;
   fetched: boolean = false;
   gallery: string[] = [];
+  thumbnailUrl: string;
 
   constructor( private apiService: ApiService ) { }
 
@@ -38,8 +29,14 @@ export class ItemThumbnailComponent implements OnInit {
   }
 
   ngOnInit() {
-    if ( this.item.galleryURL === undefined ) {
-      this.item.galleryURL = [ 'https://thumbs1.ebaystatic.com/pict/04040_0.jpg' ];
+    if ( this.item.pictureURLSuperSize != undefined ) {
+      this.thumbnailUrl = this.item.pictureURLSuperSize[ 0 ];
+    } else if ( this.item.pictureURLLarge != undefined ) {
+      this.thumbnailUrl = this.item.pictureURLLarge[ 0 ];
+    } else if ( this.item.galleryURL != undefined ) {
+      this.thumbnailUrl = this.item.galleryURL[ 0 ];
+    } else {
+      this.thumbnailUrl = 'https://thumbs1.ebaystatic.com/pict/04040_0.jpg';
     }
   }
 
