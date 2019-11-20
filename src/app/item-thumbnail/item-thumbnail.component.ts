@@ -9,8 +9,11 @@ import { IsoCountryService } from '../common/iso-country.service';
   styleUrls: [ 'item-thumbnail.component.css' ]
 } )
 export class ItemThumbnailComponent implements OnInit {
-  @Input() item;
-  @Input() index;
+  @Input()
+  item;
+
+  @Input()
+  index;
 
   expanded: boolean = false;
   fetched: boolean = false;
