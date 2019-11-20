@@ -48,8 +48,8 @@ export class ApiService {
     } ) );
   }
 
-  getCategoryConditions( categoryID: string ): Observable<any> {
-    return this.httpClient.get( environment.baseUrl + 'category/' + categoryID + '/condition' ).pipe( tap( res => {
+  getCategoryConditions( categoryId: string ): Observable<any> {
+    return this.httpClient.get( environment.baseUrl + 'category/' + categoryId + '/condition' ).pipe( tap( res => {
       // console.log( 'Category Condition Response:', res );
     } ) );
   }
@@ -68,7 +68,7 @@ export class ApiService {
     } ) );
   }
 
-  isValidCondition( categoryID: string, conditionID: string ): Observable<boolean> {
+  isValidCondition( categoryId: string, conditionId: string ): Observable<boolean> {
     const trueObs = new Observable<boolean>( observer => {
       observer.next( true )
       observer.complete();
@@ -79,20 +79,20 @@ export class ApiService {
       observer.complete();
     } );
 
-    if ( conditionID == '0' || conditionID == 'Unspecified' ) return trueObs;
-    else if ( categoryID === '0' ) {
-      if ( conditionID == 'New' || conditionID == 'Used' ) return trueObs;
+    if ( conditionId == '0' || conditionId == 'Unspecified' ) return trueObs;
+    else if ( categoryId === '0' ) {
+      if ( conditionId == 'New' || conditionId == 'Used' ) return trueObs;
       else return falseObs;
     } else {
-      return this.httpClient.get<any>( environment.baseUrl + 'category/' + categoryID + '/condition' ).pipe( map( res => {
+      return this.httpClient.get<any>( environment.baseUrl + 'category/' + categoryId + '/condition' ).pipe( map( res => {
         if ( res.Category != undefined ) {
           var conditions = [];
           res.Category[ 0 ].ConditionValues[ 0 ].Condition.forEach( ( element, index ) => {
             conditions.push( element.ID[ 0 ] );
           } );
-          return conditions.includes( conditionID );
+          return conditions.includes( conditionId );
         } else {
-          return conditionID == 'Used';
+          return conditionId == 'Used';
         }
       } ) );
     }

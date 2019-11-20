@@ -33,15 +33,15 @@ export class DropdownInputComponent implements ControlValueAccessor, OnInit, OnC
   items: Map<string, Array<string>> = new Map();
 
   private onChange = ( _: any ) => { };
-  private _value;
+  private value_;
 
   get value() {
-    return this._value;
+    return this.value_;
   }
 
   set value( value: string ) {
-    this._value = value;
-    this.onChange( this._value );
+    this.value_ = value;
+    this.onChange( this.value_ );
   }
 
   writeValue( value: string ): void {
@@ -56,7 +56,7 @@ export class DropdownInputComponent implements ControlValueAccessor, OnInit, OnC
 
   selectItem( item ): void {
     this.value = item.key;
-    this.onChange( this._value );
+    this.onChange( this.value_ );
   }
 
   selected(): string {
