@@ -35,7 +35,7 @@ export class ApiService {
   }
 
   getItem( id: string, { description = false } = {} ): Observable<any> {
-    var url = environment.baseUrl + 'item/' + id;
+    let url = environment.baseUrl + 'item/' + id;
     if ( description = true ) url += '/description';
     return this.httpClient.get( url ).pipe( tap( res => {
       // console.log( 'Get Item Response:', res );
@@ -86,7 +86,7 @@ export class ApiService {
     } else {
       return this.httpClient.get<any>( environment.baseUrl + 'category/' + categoryId + '/condition' ).pipe( map( res => {
         if ( res.Category != undefined ) {
-          var conditions = [];
+          let conditions = [];
           res.Category[ 0 ].ConditionValues[ 0 ].Condition.forEach( ( element, index ) => {
             conditions.push( element.ID[ 0 ] );
           } );

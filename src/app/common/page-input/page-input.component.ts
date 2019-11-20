@@ -23,18 +23,18 @@ export class PageInputComponent implements ControlValueAccessor, OnInit, OnChang
   @Input()
   toDisplay: number = 8;
 
-  private onChange = ( _: any ) => { };
-  private _value;
+  private onChange_ = ( _: any ) => { };
+  private value_;
 
   pages: number[] = [];
 
   get value() {
-    return this._value;
+    return this.value_;
   }
 
   set value( value: number ) {
-    this._value = value;
-    this.onChange( this.value );
+    this.value_ = value;
+    this.onChange_( this.value );
   }
 
   writeValue( value: number ): void {
@@ -42,22 +42,22 @@ export class PageInputComponent implements ControlValueAccessor, OnInit, OnChang
   }
 
   registerOnChange( fn: any ): void {
-    this.onChange = fn;
+    this.onChange_ = fn;
   }
 
   registerOnTouched( fn: any ): void { }
 
   setPages( currentPage: number, totalPages: number, toDisplay: number ) {
-    var minPage = currentPage - Math.floor( toDisplay / 2 );
-    var maxPage = currentPage + Math.floor( toDisplay / 2 );
-    var extraLeft = Math.max( minPage * -1 + 1, 0 );
-    var extraRight = Math.max( maxPage - totalPages, 0 );
+    let minPage = currentPage - Math.floor( toDisplay / 2 );
+    let maxPage = currentPage + Math.floor( toDisplay / 2 );
+    let extraLeft = Math.max( minPage * -1 + 1, 0 );
+    let extraRight = Math.max( maxPage - totalPages, 0 );
 
     maxPage = Math.min( maxPage + extraLeft, totalPages );
     minPage = Math.max( 1, minPage - extraRight );
 
     this.pages = [];
-    for ( var i = minPage; i <= maxPage; i++ ) {
+    for ( let i = minPage; i <= maxPage; i++ ) {
       this.pages.push( i );
     }
   }

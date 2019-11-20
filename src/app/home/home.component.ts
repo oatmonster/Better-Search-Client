@@ -22,7 +22,7 @@ export class HomeComponent implements OnInit {
       query: this.searchForm.value.query.trim()
     } );
     if ( this.searchForm.value.query !== '' ) {
-      var params: IQuery = { query: this.searchForm.value.query }
+      let params: IQuery = { query: this.searchForm.value.query }
       this.router.navigate( [ 'search', params ] );
     }
   }

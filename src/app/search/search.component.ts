@@ -69,7 +69,7 @@ export class SearchComponent implements OnInit {
       this.router.navigateByUrl( '' );
     } else {
       if ( newPage == this.currentState.page ) newPage == 1;
-      var params: IQuery = { query: this.searchForm.value.query.trim() };
+      let params: IQuery = { query: this.searchForm.value.query.trim() };
       if ( +newSort > 0 ) params.sortBy = newSort;
       if ( +newListType > 0 ) params.listType = newListType;
       if ( newPage > 1 ) params.page = newPage;
@@ -84,7 +84,7 @@ export class SearchComponent implements OnInit {
   }
 
   updateConditions() {
-    var conditions = new Map();
+    let conditions = new Map();
     conditions.set( '0', 'Any Condition' );
     if ( this.searchForm.value.category == '0' ) {
       conditions.set( 'New', 'New' );
@@ -134,7 +134,7 @@ export class SearchComponent implements OnInit {
         this.router.navigateByUrl( '' );
       }
 
-      var query: IQuery = { query: params.get( 'query' ) }
+      let query: IQuery = { query: params.get( 'query' ) }
 
       if ( params.has( 'page' ) && +params.get( 'page' ) <= 100 && +params.get( 'page' ) >= 1 ) {
         query.page = +params.get( 'page' );
@@ -149,7 +149,7 @@ export class SearchComponent implements OnInit {
       }
 
       // Asynchronous validations
-      var observables: any = {
+      let observables: any = {
       }
 
       if ( params.has( 'category' ) && params.get( 'category' ) !== '0' ) {
