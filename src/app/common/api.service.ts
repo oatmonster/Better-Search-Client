@@ -30,7 +30,7 @@ export class ApiService {
     }
 
     return this.httpClient.get( environment.baseUrl + 'search', options ).pipe( tap( res => {
-      // console.log( 'Search Items Response:', res );
+      console.log( 'Search Items Response:', res );
     } ) );
   }
 
