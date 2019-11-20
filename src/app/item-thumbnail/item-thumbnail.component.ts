@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 
 import { ApiService } from '../common/api.service';
+import { IsoCountryService } from '../common/iso-country.service';
 
 @Component( {
   selector: 'item-thumbnail',
@@ -15,8 +16,9 @@ export class ItemThumbnailComponent implements OnInit {
   fetched: boolean = false;
   gallery: string[] = [];
   thumbnailUrl: string;
+  country: string;
 
-  constructor( private apiService: ApiService ) { }
+  constructor( private apiService: ApiService, private isoCountryService: IsoCountryService ) { }
 
   toggleExpand() {
     if ( !this.fetched ) {
@@ -38,6 +40,8 @@ export class ItemThumbnailComponent implements OnInit {
     } else {
       this.thumbnailUrl = 'https://thumbs1.ebaystatic.com/pict/04040_0.jpg';
     }
+
+    this.country = this.isoCountryService.country( this.item.country[ 0 ] );
   }
 
 }

@@ -26,6 +26,8 @@
         </div>
         <div class="col">
           <remaining-time [endTimeIso]="item.listingInfo[0].endTime[0]"></remaining-time>
+          <br>
+          <span class="text-secondary" *ngIf="country != undefined && item.country[0] != 'US'">From {{ country }}</span>
         </div>
       </div>
       <div class="row">
