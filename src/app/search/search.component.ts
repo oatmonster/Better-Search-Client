@@ -68,6 +68,7 @@ export class SearchComponent implements OnInit {
     if ( this.searchForm.value.query.trim() == '' ) {
       this.router.navigateByUrl( '' );
     } else {
+      if ( newPage == this.currentState.page ) newPage == 1;
       var params: IQuery = { query: this.searchForm.value.query.trim() };
       if ( +newSort > 0 ) params.sortBy = newSort;
       if ( +newListType > 0 ) params.listType = newListType;
