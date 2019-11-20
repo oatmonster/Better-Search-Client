@@ -1,35 +1,31 @@
 <div class="container">
   <div class="row">
     <div class="col col-md-2">
-      <a routerLink="/item/{{item.itemId[0]}}">
-        <img class="thumbnail" src="{{thumbnailUrl}}" alt="No Image">
+      <a routerLink="/item/{{ item.itemId[0] }}">
+        <img class="thumbnail" src="{{ thumbnailUrl }}" alt="No Image">
       </a>
     </div>
     <div class="col">
-      <a routerLink="/item/{{item.itemId[0]}}">
-        <p class="title">
-          {{item.title[0]}}
-        </p>
-
+      <a routerLink="/item/{{ item.itemId[0] }}">
+        <p>{{ item.title[0] }}</p>
       </a>
       <div class="row">
         <div class="col">
           <p>
-            Current Price: {{item.sellingStatus[0].currentPrice[0].__value__}}
-            {{item.sellingStatus[0].currentPrice[0]['@currencyId']}}
+            Current Price: {{ item.sellingStatus[0].currentPrice[0].__value__ }}
+            {{ item.sellingStatus[0].currentPrice[0][ '@currencyId' ] }}
           </p>
           <p>
-            <button class="btn btn-light" type="button" (click)="toggleExpand()">{{expanded ? 'Hide' : 'Expand'}}</button>
+            <button class="btn btn-light" type="button" (click)="toggleExpand()">{{ expanded ? 'Hide' : 'Expand' }}</button>
           </p>
         </div>
         <div class="col">
-          List Type: {{item.listingInfo[0].listingType[0]}}
+          List Type: {{ item.listingInfo[0].listingType[0] }}
           <br>
-          Offer Enabled: {{item.listingInfo[0].bestOfferEnabled[0]}}
+          Offer Enabled: {{ item.listingInfo[0].bestOfferEnabled[0] }}
         </div>
-        <div class="col text-right">
-          <!-- Switch this to use the ending time and calculate/display remaining time -->
-          Time Left:{{item.sellingStatus[0].timeLeft[0]}}
+        <div class="col">
+          <remaining-time [endTimeIso]="item.listingInfo[0].endTime[0]"></remaining-time>
         </div>
       </div>
       <div class="row">

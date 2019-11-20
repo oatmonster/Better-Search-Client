@@ -5,7 +5,11 @@
       <square-carousel [items]="item?.PictureURL"></square-carousel>
     </div>
     <div class="col">
-      Other info here
+      <p>Condition: {{ item?.ConditionDisplayName }}</p>
+      <p>Time left: <remaining-time [endTimeIso]="item?.EndTime[0]"></remaining-time>
+      </p>
+      <br>
+      <p>{{ item?.ConvertedCurrentPrice.Value }} {{ item?.ConvertedCurrentPrice.CurrencyID }}</p>
     </div>
   </div>
   <div [innerHTML]="item?.Description"></div>
