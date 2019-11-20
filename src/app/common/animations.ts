@@ -14,13 +14,25 @@ export const fadeOut = trigger( 'fadeOut',
 
 export const staggerList = trigger( 'staggerList',
   [
-    transition( '* => *', [ // each time the binding value changes
-      query( ':enter', [
-        style( { opacity: 0 } ),
-        stagger( 100, [
-          animate( '0.5s ease-out', style( { opacity: 1 } ) )
-        ] )
-      ], { optional: true } )
-    ] )
+    transition(
+      '* => *',
+      [ // each time the binding value changes
+        query(
+          ':enter',
+          [
+            style(
+              { opacity: 0 }
+            ),
+            stagger(
+              100,
+              [
+                animate( '0.5s ease-out', style( { opacity: 1 } ) )
+              ]
+            )
+          ],
+          { optional: true }
+        )
+      ]
+    )
   ]
 );
