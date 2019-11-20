@@ -14,6 +14,7 @@ import { fadeOut } from '../common/animations';
     .loading {
       position: fixed;
       width: 100%;
+      height: 8px;
       z-index: 10000;
     }
   ` ],
