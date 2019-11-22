@@ -23,16 +23,27 @@ export class PageInputComponent implements ControlValueAccessor, OnInit, OnChang
   @Input()
   toDisplay: number = 8;
 
-  private onChange = ( _: any ) => { };
+  private onChange_ = ( _: any ) => { };
+  private value_;
 
-  value;
   pages: number[] = [];
+
+  get value() {
+    return this.value_;
+  }
+
+  set value( value: number ) {
+    this.value_ = value;
+    this.onChange_( this.value );
+  }
 
   writeValue( value: number ): void {
     this.value = value;
   }
 
-  registerOnChange( fn: any ): void { }
+  registerOnChange( fn: any ): void {
+    this.onChange_ = fn;
+  }
 
   registerOnTouched( fn: any ): void { }
 
