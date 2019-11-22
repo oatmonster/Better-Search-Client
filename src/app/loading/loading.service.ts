@@ -23,7 +23,7 @@ export class LoadingService {
   }
 
   private increment() {
-    if ( this.width >= 99 ) return;
+    if ( this.width >= 90 ) return;
     let inc: number = Math.max( 100 / ( this.width + 10 ) - Math.random(), 0 );
     this.setWidth( this.width + inc );
   }
