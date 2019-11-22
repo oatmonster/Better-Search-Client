@@ -1,10 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnChanges } from '@angular/core';
 
 @Component( {
   selector: 'remaining-time',
   templateUrl: './remaining-time.component.html'
 } )
-export class RemainingTimeComponent implements OnInit {
+export class RemainingTimeComponent implements OnInit, OnChanges {
 
   @Input()
   endTimeIso: string = '1970-01-01T00:00:00.000Z';
@@ -17,7 +17,7 @@ export class RemainingTimeComponent implements OnInit {
 
   updateTimer;
 
-  update() {
+  private update() {
     let distance = this.endTime - Date.now();
 
     let days = Math.floor( distance / ( 1000 * 60 * 60 * 24 ) );
@@ -28,12 +28,14 @@ export class RemainingTimeComponent implements OnInit {
     let remainingTime = '';
 
     if ( days > 0 ) {
+      this.status = 'normal';
       remainingTime += days + ( days === 1 ? ' day ' : ' days ' );
       if ( hours > 0 ) {
         remainingTime += hours + ( hours === 1 ? ' hour ' : ' hours ' );
       }
       remainingTime += 'left';
     } else if ( hours > 0 ) {
+      this.status = 'normal';
       remainingTime += hours + ( hours === 1 ? ' hour ' : ' hours ' );
       if ( minutes > 0 ) {
         remainingTime += minutes + ( minutes === 1 ? ' minute ' : ' minutes ' );
@@ -49,13 +51,12 @@ export class RemainingTimeComponent implements OnInit {
       this.status = 'ended';
       remainingTime = 'Ended'
     }
-
-
     this.remainingTime = remainingTime;
+
   }
 
-  ngOnInit() {
-
+  private reset() {
+    clearInterval( this.updateTimer );
     this.endTime = Date.parse( this.endTimeIso );
 
     this.update();
@@ -63,8 +64,14 @@ export class RemainingTimeComponent implements OnInit {
     this.updateTimer = setInterval( () => {
       this.update();
     }, 1000 );
+  }
 
+  ngOnInit() {
+    this.reset();
+  }
 
+  ngOnChanges() {
+    this.reset();
   }
 
 }

@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 
-import { ApiService } from '../common/api.service';
+import { ApiService, IItem } from '../common/api.service';
 import { IsoCountryService } from '../common/iso-country.service';
 
 @Component( {
@@ -10,16 +10,15 @@ import { IsoCountryService } from '../common/iso-country.service';
 } )
 export class ItemThumbnailComponent implements OnInit {
   @Input()
-  item;
+  item: IItem;
 
   @Input()
-  index;
+  index: number;
 
   expanded: boolean = false;
   fetched: boolean = false;
   gallery: string[] = [];
-  thumbnailUrl: string;
-  country: string;
+  countryName: string;
 
   constructor( private apiService: ApiService, private isoCountryService: IsoCountryService ) { }
 
@@ -34,17 +33,17 @@ export class ItemThumbnailComponent implements OnInit {
   }
 
   ngOnInit() {
-    if ( this.item.pictureURLSuperSize != undefined ) {
-      this.thumbnailUrl = this.item.pictureURLSuperSize[ 0 ];
-    } else if ( this.item.pictureURLLarge != undefined ) {
-      this.thumbnailUrl = this.item.pictureURLLarge[ 0 ];
-    } else if ( this.item.galleryURL != undefined ) {
-      this.thumbnailUrl = this.item.galleryURL[ 0 ];
-    } else {
-      this.thumbnailUrl = 'https://thumbs1.ebaystatic.com/pict/04040_0.jpg';
-    }
+    // if ( this.item.pictureURLSuperSize != undefined ) {
+    //   this.thumbnailUrl = this.item.pictureURLSuperSize[ 0 ];
+    // } else if ( this.item.pictureURLLarge != undefined ) {
+    //   this.thumbnailUrl = this.item.pictureURLLarge[ 0 ];
+    // } else if ( this.item.galleryURL != undefined ) {
+    //   this.thumbnailUrl = this.item.galleryURL[ 0 ];
+    // } else {
+    //   this.thumbnailUrl = 'https://thumbs1.ebaystatic.com/pict/04040_0.jpg';
+    // }
 
-    this.country = this.isoCountryService.country( this.item.country[ 0 ] );
+    this.countryName = this.isoCountryService.country( this.item.country );
   }
 
 }

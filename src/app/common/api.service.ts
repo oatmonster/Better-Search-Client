@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { tap, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
@@ -9,47 +9,49 @@ import { environment } from '../../environments/environment';
 export class ApiService {
   constructor( private httpClient: HttpClient ) { };
 
-  searchItems( queryForm: IQuery ): Observable<any> {
-    const options = { 'params': new HttpParams().set( 'query', queryForm.query ) };
+  searchItems( queryForm: IQuery ): Observable<HttpResponse<ISearchResult>> {
+    let params = new HttpParams().set( 'query', queryForm.query );
 
     // Set optional params
     if ( queryForm.page != null ) {
-      options.params = options.params.set( 'page', '' + queryForm.page );
+      params = params.set( 'page', '' + queryForm.page );
     }
     if ( queryForm.sortBy != null ) {
-      options.params = options.params.set( 'sortBy', queryForm.sortBy );
+      params = params.set( 'sortBy', queryForm.sortBy );
     }
     if ( queryForm.listType != null ) {
-      options.params = options.params.set( 'listType', queryForm.listType );
+      params = params.set( 'listType', queryForm.listType );
     }
     if ( queryForm.category != null ) {
-      options.params = options.params.set( 'category', queryForm.category );
+      params = params.set( 'category', queryForm.category );
     }
     if ( queryForm.condition != null ) {
-      options.params = options.params.set( 'condition', queryForm.condition );
+      params = params.set( 'condition', queryForm.condition );
     }
 
-    return this.httpClient.get( environment.baseUrl + 'search', options ).pipe( tap( res => {
+    return this.httpClient.get<ISearchResult>(
+      environment.baseUrl + 'v2/search', { observe: 'response', params: params }
+    ).pipe( tap( res => {
       console.log( 'Search Items Response:', res );
     } ) );
   }
 
   getItem( id: string, { description = false } = {} ): Observable<any> {
-    let url = environment.baseUrl + 'item/' + id;
-    if ( description = true ) url += '/description';
+    let url = environment.baseUrl + 'v1/item/' + id;
+    if ( description == true ) url += '/description';
     return this.httpClient.get( url ).pipe( tap( res => {
-      // console.log( 'Get Item Response:', res );
+      console.log( 'Get Item Response:', res );
     } ) );
   }
 
   getBaseCategories(): Observable<any> {
-    return this.httpClient.get( environment.baseUrl + 'category' ).pipe( tap( res => {
+    return this.httpClient.get( environment.baseUrl + 'v1/category' ).pipe( tap( res => {
       // console.log( 'Categories Response:', res );
     } ) );
   }
 
   getCategoryConditions( categoryId: string ): Observable<any> {
-    return this.httpClient.get( environment.baseUrl + 'category/' + categoryId + '/condition' ).pipe( tap( res => {
+    return this.httpClient.get( environment.baseUrl + 'v1/category/' + categoryId + '/condition' ).pipe( tap( res => {
       // console.log( 'Category Condition Response:', res );
     } ) );
   }
@@ -61,7 +63,7 @@ export class ApiService {
         observer.complete();
       } );
     }
-    return this.httpClient.get<any>( environment.baseUrl + 'category/' + id ).pipe( tap( res => {
+    return this.httpClient.get<any>( environment.baseUrl + 'v1/category/' + id ).pipe( tap( res => {
       // console.log( 'Valid Category Response:', res );
     } ) ).pipe( map( res => {
       return res.CategoryCount[ 0 ] == 1;
@@ -84,7 +86,7 @@ export class ApiService {
       if ( conditionId == 'New' || conditionId == 'Used' ) return trueObs;
       else return falseObs;
     } else {
-      return this.httpClient.get<any>( environment.baseUrl + 'category/' + categoryId + '/condition' ).pipe( map( res => {
+      return this.httpClient.get<any>( environment.baseUrl + 'v1/category/' + categoryId + '/condition' ).pipe( map( res => {
         if ( res.Category != undefined ) {
           let conditions = [];
           res.Category[ 0 ].ConditionValues[ 0 ].Condition.forEach( ( element, index ) => {
@@ -106,4 +108,61 @@ export interface IQuery {
   listType?: string,
   category?: string,
   condition?: string
+}
+
+export interface IResponse<T> {
+  ack: 'Success' | 'Failure',
+  version: string,
+  timestamp: Date,
+  errorMessage?: string,
+  body: T,
+}
+
+export interface IItem {
+  itemId: string,
+  title: string,
+  thumbnailUrl: string,
+  country: string,
+  condition: {
+    conditionId: string,
+    conditionName: string,
+  },
+  category: {
+    categoryId: string,
+    categoryName: string,
+  }
+  listingInfo: {
+    startTime: string,
+    endTime: string,
+    listingType: string,
+    bestOfferEnabled: boolean,
+    buyItNowEnabled: boolean,
+    currentPrice: {
+      price: string,
+      currencyId: string,
+    },
+    currentPriceConverted: {
+      price: string,
+      currencyId: string,
+    },
+    sellingState: string,
+    watchCount: number,
+    bidCount?: number,
+  },
+  shippingInfo: {
+    shippingType: string,
+  },
+}
+
+export interface ISearchResult {
+  searchResult: {
+    count: number,
+    items: IItem[],
+  },
+  pagination: {
+    page: number,
+    totalPages: number,
+    entriesPerPage: number,
+  },
+  searchEbayUrl: string,
 }
