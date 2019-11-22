@@ -10,35 +10,35 @@ export class LoadingInterceptor implements HttpInterceptor {
 
   constructor( private loadingService: LoadingService ) { }
 
-  private reqSent_: number = 0;
-  private reqCompleted_: number = 0;
-  private reqTotal_: number = 0;
-  private startTimeout_;
+  private reqSent: number = 0;
+  private reqCompleted: number = 0;
+  private reqTotal: number = 0;
+  private startTimeout;
 
   setComplete() {
-    clearTimeout( this.startTimeout_ );
-    this.reqCompleted_ = 0;
-    this.reqSent_ = 0;
-    this.reqTotal_ = 0;
+    clearTimeout( this.startTimeout );
+    this.reqCompleted = 0;
+    this.reqSent = 0;
+    this.reqTotal = 0;
     this.loadingService.complete();
   }
 
   intercept( req: HttpRequest<any>, next: HttpHandler ): Observable<HttpEvent<any>> {
-    if ( this.reqSent_ === 0 ) {
-      this.startTimeout_ = setTimeout( () => {
+    if ( this.reqSent === 0 ) {
+      this.startTimeout = setTimeout( () => {
         this.loadingService.start();
       }, 200 );
     }
 
-    this.reqSent_++;
-    this.reqTotal_++
-    this.loadingService.setWidth( this.reqCompleted_ / this.reqTotal_ * 100 );
+    this.reqSent++;
+    this.reqTotal++
+    this.loadingService.setWidth( this.reqCompleted / this.reqTotal * 100 );
 
     return next.handle( req ).pipe( finalize( () => {
-      this.reqCompleted_++;
-      this.loadingService.setWidth( this.reqCompleted_ / this.reqTotal_ * 100 );
+      this.reqCompleted++;
+      this.loadingService.setWidth( this.reqCompleted / this.reqTotal * 100 );
 
-      if ( this.reqCompleted_ >= this.reqTotal_ ) {
+      if ( this.reqCompleted >= this.reqTotal ) {
         this.setComplete();
       }
     } ) );
