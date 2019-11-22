@@ -1,33 +1,33 @@
 <div class="container">
   <div class="row">
     <div class="col col-md-2">
-      <a routerLink="/item/{{ item.itemId[0] }}">
-        <img class="thumbnail" src="{{ thumbnailUrl }}" alt="No Image">
+      <a routerLink="/item/{{ item.itemId }}">
+        <img class="thumbnail" src="{{ item.thumbnailUrl }}" alt="No Image">
       </a>
     </div>
     <div class="col">
-      <a routerLink="/item/{{ item.itemId[0] }}">
-        <p>{{ item.title[0] }}</p>
+      <a routerLink="/item/{{ item.itemId }}">
+        <p>{{ item.title }}</p>
       </a>
       <div class="row">
         <div class="col">
           <p>
-            Current Price: {{ item.sellingStatus[0].currentPrice[0].__value__ }}
-            {{ item.sellingStatus[0].currentPrice[0][ '@currencyId' ] }}
+            Current Price: {{ item.listingInfo.currentPrice.price }}
+            {{ item.listingInfo.currentPrice.currencyId }}
           </p>
           <p>
             <button class="btn btn-light" type="button" (click)="toggleExpand()">{{ expanded ? 'Hide' : 'Expand' }}</button>
           </p>
         </div>
         <div class="col">
-          List Type: {{ item.listingInfo[0].listingType[0] }}
+          List Type: {{ item.listingInfo.listingType }}
           <br>
-          Offer Enabled: {{ item.listingInfo[0].bestOfferEnabled[0] }}
+          Offer Enabled: {{ item.listingInfo.bestOfferEnabled }}
         </div>
         <div class="col">
-          <remaining-time [endTimeIso]="item.listingInfo[0].endTime[0]"></remaining-time>
+          <remaining-time [endTimeIso]="item.listingInfo.endTime"></remaining-time>
           <br>
-          <span class="text-secondary" *ngIf="country != undefined && item.country[0] != 'US'">From {{ country }}</span>
+          <span class="text-secondary" *ngIf="countryName != undefined && item.country != 'US'">From {{ countryName }}</span>
         </div>
       </div>
       <div class="row">

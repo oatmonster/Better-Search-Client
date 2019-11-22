@@ -17,6 +17,7 @@ export class ItemDetailComponent implements OnInit {
   ngOnInit() {
     this.apiService.getItem( this.activatedRoute.snapshot.params[ 'id' ], { description: true } ).subscribe( res => {
       this.item = res;
+      // console.log( this.item );
     } );
   }
 }

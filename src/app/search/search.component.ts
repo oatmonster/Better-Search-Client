@@ -5,7 +5,7 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { defaultIfEmpty } from 'rxjs/operators';
 
-import { ApiService, IQuery } from '../common/api.service';
+import { ApiService, IQuery, IResponse, IItem, ISearchResult } from '../common/api.service';
 import { staggerList } from '../common/animations';
 
 
@@ -18,7 +18,7 @@ import { staggerList } from '../common/animations';
 export class SearchComponent implements OnInit {
 
   totalPages: number;
-  items: any[];
+  items: IItem[];
   pagination: any = {};
   pages: number[] = [];
   sortings = new Map( [
@@ -77,7 +77,7 @@ export class SearchComponent implements OnInit {
       if ( +newCategory > 0 ) params.category = newCategory;
       if ( newCategory != this.currentState.category ) newCondition = '0';
       if ( +newCondition != 0 ) params.condition = newCondition;
-
+      console.log( "Params:", params );
       this.router.navigate( [ 'search', params ] );
     }
 
@@ -108,7 +108,7 @@ export class SearchComponent implements OnInit {
   }
 
   submit() {
-    // console.log( 'Form Value on Submit:', this.searchForm.value );
+    console.log( 'Form Value on Submit:', this.searchForm.value );
     this.search();
   }
 
@@ -176,13 +176,10 @@ export class SearchComponent implements OnInit {
             condition: query.condition || '0'
           };
 
-          if ( res.ack[ 0 ] == 'Success' ) {
-            this.items = res.searchResult[ 0 ].item || [];
-            this.pagination = res.paginationOutput[ 0 ];
-
-            this.currentState.page = +this.pagination.pageNumber;
-            this.totalPages = Math.min( 100, +this.pagination.totalPages[ 0 ] );
-
+          if ( res.status == 200 ) {
+            this.items = res.body.searchResult.items || [];
+            this.currentState.page = res.body.pagination.page;
+            this.totalPages = Math.min( 100, res.body.pagination.totalPages );
           } else {
             console.log( 'Invalid Search' );
           }
