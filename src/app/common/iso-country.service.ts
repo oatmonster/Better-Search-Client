@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class IsoCountryService {
-  private countryMap_ = new Map( [
+  private countryMap = new Map( [
     [ 'AF', 'Afghanistan' ],
     [ 'AX', 'Åland Islands' ],
     [ 'AL', 'Albania' ],
@@ -255,6 +255,6 @@ export class IsoCountryService {
   ] );
 
   country( code: string ): string {
-    return this.countryMap_.get( code );
+    return this.countryMap.get( code );
   }
 }

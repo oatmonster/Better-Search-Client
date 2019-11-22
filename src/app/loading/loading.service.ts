@@ -2,37 +2,37 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class LoadingService {
-  private width_: number;
-  private visible_: boolean = false;
-  private incTimeout_;
+  private width: number;
+  private visible: boolean = false;
+  private incTimeout;
 
   start() {
-    this.width_ = 0;
-    this.visible_ = true;
+    this.width = 0;
+    this.visible = true;
   }
 
   complete() {
-    this.width_ = 100;
-    setTimeout( () => this.visible_ = false, 250 );
+    this.width = 100;
+    setTimeout( () => this.visible = false, 250 );
   }
 
   setWidth( width: number ) {
-    this.width_ = width;
-    clearTimeout( this.incTimeout_ );
-    this.incTimeout_ = setTimeout( () => this.increment_(), 250 );
+    this.width = width;
+    clearTimeout( this.incTimeout );
+    this.incTimeout = setTimeout( () => this.increment(), 250 );
   }
 
-  private increment_() {
-    if ( this.width_ >= 99 ) return;
-    let inc: number = Math.max( 100 / ( this.width_ + 10 ) - Math.random(), 0 );
-    this.setWidth( this.width_ + inc );
+  private increment() {
+    if ( this.width >= 99 ) return;
+    let inc: number = Math.max( 100 / ( this.width + 10 ) - Math.random(), 0 );
+    this.setWidth( this.width + inc );
   }
 
   getVisible() {
-    return this.visible_;
+    return this.visible;
   }
 
   getWidth() {
-    return this.width_;
+    return this.width;
   }
 }

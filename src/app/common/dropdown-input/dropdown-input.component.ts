@@ -32,31 +32,20 @@ export class DropdownInputComponent implements ControlValueAccessor, OnInit, OnC
 
   items: Map<string, Array<string>> = new Map();
 
-  private onChange_ = ( _: any ) => { };
-  private value_;
-
-  get value() {
-    return this.value_;
-  }
-
-  set value( value: string ) {
-    this.value_ = value;
-    this.onChange_( this.value_ );
-  }
+  private onChange = ( _: any ) => { };
+  value;
 
   writeValue( value: string ): void {
     this.value = value;
   }
 
-  registerOnChange( fn: any ): void {
-    this.onChange_ = fn;
-  }
+  registerOnChange( fn: any ): void { }
 
   registerOnTouched( fn: any ): void { }
 
   selectItem( item ): void {
     this.value = item.key;
-    this.onChange_( this.value_ );
+    this.onChange( this.value );
   }
 
   selected(): string {
