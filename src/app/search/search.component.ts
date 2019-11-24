@@ -8,7 +8,6 @@ import { defaultIfEmpty } from 'rxjs/operators';
 import { ApiService, IQuery, IResponse, IItem, ISearchResult } from '../common/api.service';
 import { staggerList } from '../common/animations';
 
-
 @Component( {
   selector: 'search',
   templateUrl: 'search.component.html',

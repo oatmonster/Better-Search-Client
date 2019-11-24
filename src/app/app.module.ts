@@ -19,7 +19,7 @@ import { HomeComponent } from './home/home.component';
 import { DropdownInputComponent } from './common/dropdown-input/dropdown-input.component';
 import { PageInputComponent } from './common/page-input/page-input.component';
 import { SquareCarouselComponent } from './common/square-carousel/square-carousel.component';
-import { RemainingTimeComponent } from './remaining-time/remaining-time.component';
+import { TimeRemainingComponent } from './time-remaining/time-remaining.component';
 
 import { LoadingInterceptor } from './loading/loading.interceptor';
 
@@ -45,7 +45,7 @@ import { appRoutes } from './routes';
     DropdownInputComponent,
     PageInputComponent,
     SquareCarouselComponent,
-    RemainingTimeComponent,
+    TimeRemainingComponent,
   ],
   providers: [
     ApiService,
