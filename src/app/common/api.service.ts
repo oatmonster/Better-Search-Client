@@ -32,7 +32,7 @@ export class ApiService {
     return this.httpClient.get<ISearchResult>(
       environment.baseUrl + 'v2/search', { observe: 'response', params: params }
     ).pipe( tap( res => {
-      console.log( 'Search Items Response:', res );
+      console.log( 'Search Items Response:', res.body );
     } ) );
   }
 
