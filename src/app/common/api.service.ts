@@ -44,6 +44,11 @@ export class ApiService {
     } ) );
   }
 
+  getItemPictures( id: string ): Observable<HttpResponse<string[]>> {
+    let url = environment.baseUrl + 'v2/items/' + id + '/pictures';
+    return this.httpClient.get<string[]>( url, { observe: 'response' } );
+  }
+
   getBaseCategories(): Observable<any> {
     return this.httpClient.get( environment.baseUrl + 'v1/category' ).pipe( tap( res => {
       // console.log( 'Categories Response:', res );
@@ -131,24 +136,22 @@ export interface IItem {
     categoryId: string,
     categoryName: string,
   }
-  listingInfo: {
-    startTime: string,
-    endTime: string,
-    listingType: string,
-    bestOfferEnabled: boolean,
-    buyItNowEnabled: boolean,
-    currentPrice: {
-      price: string,
-      currencyId: string,
-    },
-    currentPriceConverted: {
-      price: string,
-      currencyId: string,
-    },
-    sellingState: string,
-    watchCount: number,
-    bidCount?: number,
+  startTime: string,
+  endTime: string,
+  listingType: string,
+  bestOfferEnabled: boolean,
+  buyItNowEnabled: boolean,
+  currentPrice: {
+    price: number,
+    currencyId: string,
   },
+  currentPriceConverted: {
+    price: number,
+    currencyId: string,
+  },
+  sellingState: string,
+  watchCount: number,
+  bidCount?: number,
   shippingInfo: {
     shippingType: string,
   },

@@ -25,24 +25,14 @@ export class ItemThumbnailComponent implements OnInit {
   toggleExpand() {
     if ( !this.fetched ) {
       this.fetched = true;
-      this.apiService.getItem( this.item.itemId ).subscribe( res => {
-        this.gallery = res.PictureURL;
+      this.apiService.getItemPictures( this.item.itemId ).subscribe( res => {
+        this.gallery = res.body;
       } );
     }
     this.expanded = !this.expanded;
   }
 
   ngOnInit() {
-    // if ( this.item.pictureURLSuperSize != undefined ) {
-    //   this.thumbnailUrl = this.item.pictureURLSuperSize[ 0 ];
-    // } else if ( this.item.pictureURLLarge != undefined ) {
-    //   this.thumbnailUrl = this.item.pictureURLLarge[ 0 ];
-    // } else if ( this.item.galleryURL != undefined ) {
-    //   this.thumbnailUrl = this.item.galleryURL[ 0 ];
-    // } else {
-    //   this.thumbnailUrl = 'https://thumbs1.ebaystatic.com/pict/04040_0.jpg';
-    // }
-
     this.countryName = this.isoCountryService.country( this.item.country );
   }
 

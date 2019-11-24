@@ -1,24 +1,26 @@
-import { Component, Input, OnInit, OnChanges } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component( {
   selector: 'remaining-time',
   templateUrl: './remaining-time.component.html'
 } )
-export class RemainingTimeComponent implements OnInit, OnChanges {
+export class RemainingTimeComponent implements OnInit {
 
   @Input()
-  endTimeIso: string = '1970-01-01T00:00:00.000Z';
+  endTimeIso: string;
 
-  endTime: number;
+  endTime: Date;
 
   status: string = 'normal';
 
   remainingTime: string;
 
+  endTimeDisplay: string;
+
   updateTimer;
 
   private update() {
-    let distance = this.endTime - Date.now();
+    let distance = this.endTime.getTime() - Date.now();
 
     let days = Math.floor( distance / ( 1000 * 60 * 60 * 24 ) );
     let hours = Math.floor( ( distance % ( 1000 * 60 * 60 * 24 ) ) / ( 1000 * 60 * 60 ) );
@@ -51,13 +53,34 @@ export class RemainingTimeComponent implements OnInit, OnChanges {
       this.status = 'ended';
       remainingTime = 'Ended'
     }
+
+    let endTimeDisplay = '(';
+
+    if ( this.endTime.toDateString() === new Date().toDateString() ) {
+      endTimeDisplay += 'Today'
+    } else {
+      endTimeDisplay += new Intl.DateTimeFormat( 'en-US', { weekday: 'short' } ).format( this.endTime );
+    }
+
+    let hour = this.endTime.getHours();
+    if ( hour === 0 ) {
+      endTimeDisplay += ' 12:' + this.endTime.getMinutes() + ' AM)';
+    } else if ( hour <= 11 ) {
+      endTimeDisplay += ' ' + hour + ':' + this.endTime.getMinutes() + ' AM)';
+    } else if ( hour === 12 ) {
+      endTimeDisplay += ' 12:' + this.endTime.getMinutes() + ' PM)';
+    } else {
+      endTimeDisplay += ' ' + ( hour - 12 ) + ':' + this.endTime.getMinutes() + ' PM)';
+    }
+
     this.remainingTime = remainingTime;
+    this.endTimeDisplay = endTimeDisplay;
 
   }
 
   private reset() {
     clearInterval( this.updateTimer );
-    this.endTime = Date.parse( this.endTimeIso );
+    this.endTime = new Date( this.endTimeIso );
 
     this.update();
 
@@ -67,10 +90,6 @@ export class RemainingTimeComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    this.reset();
-  }
-
-  ngOnChanges() {
     this.reset();
   }
 
