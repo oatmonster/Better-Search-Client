@@ -1,33 +1,46 @@
 <div class="container">
   <div class="row">
-    <div class="col col-md-2">
+    <div class="col col-auto">
       <a routerLink="/item/{{ item.itemId }}">
         <img class="thumbnail" src="{{ item.thumbnailUrl }}" alt="No Image">
       </a>
     </div>
     <div class="col">
       <a routerLink="/item/{{ item.itemId }}">
-        <p>{{ item.title }}</p>
+        <span class="title">{{ item.title }}</span>
       </a>
+      <br>
       <div class="row">
         <div class="col">
-          <p>
-            Current Price: {{ item.listingInfo.currentPrice.price }}
-            {{ item.listingInfo.currentPrice.currencyId }}
-          </p>
-          <p>
-            <button class="btn btn-light" type="button" (click)="toggleExpand()">{{ expanded ? 'Hide' : 'Expand' }}</button>
-          </p>
+          <span class="font-weight-bold" style="font-size: 1.5em">
+            ${{ item.currentPriceConverted.price.toFixed(2) }}
+          </span>
+          <div class="text-secondary">
+            <span>
+              +shipping
+            </span>
+            <br>
+            <span *ngIf="item.listingType === 'Auction' || item.listingType === 'AuctionWithBIN'; else buyItNow">
+              {{ item.bidCount }} Bids
+            </span>
+            <ng-template #buyItNow>
+              Buy It Now
+            </ng-template>
+            <span *ngIf="item.bestOfferEnabled">
+              or Best Offer
+            </span>
+          </div>
+          <button class="btn btn-light gallery-toggle" type="button" (click)="toggleExpand()">
+            {{ expanded ? 'Hide' : 'Expand' }}
+          </button>
         </div>
         <div class="col">
-          List Type: {{ item.listingInfo.listingType }}
-          <br>
-          Offer Enabled: {{ item.listingInfo.bestOfferEnabled }}
-        </div>
-        <div class="col">
-          <remaining-time [endTimeIso]="item.listingInfo.endTime"></remaining-time>
-          <br>
-          <span class="text-secondary" *ngIf="countryName != undefined && item.country != 'US'">From {{ countryName }}</span>
+          <div style="padding-top: .5em">
+            <remaining-time [endTimeIso]="item.endTime"></remaining-time>
+            <br>
+            <span class="text-secondary" *ngIf="countryName != undefined && item.country != 'US'">From {{ countryName
+              }}</span>
+          </div>
         </div>
       </div>
       <div class="row">

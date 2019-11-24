@@ -1,5 +1,16 @@
 .thumbnail {
   object-fit: cover;
-  width: 100%;
+  width: 150px;
   height: 150px;
+}
+
+.title {
+  font-size: 1.2rem;
+}
+
+.gallery-toggle {
+  margin-top: .5rem;
+  margin-bottom: .5rem;
+  margin-left: 0;
+  margin-right: 0;
 }
