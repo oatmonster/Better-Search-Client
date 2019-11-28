@@ -17,7 +17,7 @@
           </span>
           <div class="text-secondary">
             <span>
-              +shipping
+              {{ getShipping() }}
             </span>
             <br>
             <span *ngIf="item.listingType === 'Auction' || item.listingType === 'AuctionWithBIN'; else buyItNow">
