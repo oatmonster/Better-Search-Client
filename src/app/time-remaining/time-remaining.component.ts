@@ -7,14 +7,21 @@ import { Component, Input, OnInit } from '@angular/core';
 export class TimeRemainingComponent implements OnInit {
 
   @Input()
-  timeRemainingIso: string;
+  listingInfo: {
+    startTimeUtc: string,
+    endTimeUtc: string,
+    endTimeLocal: string,
+    timeRemaining: string,
+    timeTilEndDay: string
+  }
 
-  @Input()
-  endTimeIso: string;
+  private updateTimer;
 
-  timeRemaining: number;
+  private timeRemaining: number;
 
-  endTime: Date;
+  private timeTilEndDay: number;
+
+  private endDate;
 
   timeRemainingDisplay: string;
 
@@ -22,7 +29,19 @@ export class TimeRemainingComponent implements OnInit {
 
   status: string = 'normal';
 
-  updateTimer;
+  private parseDate( date: string ) {
+    let regex = /(?:(\w+)\s)(?:(\w+)\s)(?:(\w+)\s)(?:(\w+)\s)(?:([\d]+):)(?:([\d]+):)?(?:([\d]+))/
+    let matches = date.match( regex );
+    return {
+      weekday: matches[ 1 ],
+      month: matches[ 2 ],
+      day: +matches[ 3 ],
+      year: +matches[ 4 ],
+      hours: +matches[ 5 ],
+      minutes: +matches[ 6 ],
+      seconds: +matches[ 7 ]
+    }
+  }
 
   private parseDuration( durationIso: string ) {
     let regex = /P(?:([.,\d]+)D)?(?:T(?:([.,\d]+)H)?(?:([.,\d]+)M)?(?:([.,\d]+)S)?)?/
@@ -38,6 +57,7 @@ export class TimeRemainingComponent implements OnInit {
 
   private update() {
     this.timeRemaining -= 1;
+    this.timeTilEndDay -= 1;
 
     let days = Math.floor( this.timeRemaining / ( 60 * 60 * 24 ) );
     let hours = Math.floor( ( this.timeRemaining % ( 60 * 60 * 24 ) ) / ( 60 * 60 ) );
@@ -73,14 +93,14 @@ export class TimeRemainingComponent implements OnInit {
 
     let endTimeDisplay = '(';
 
-    if ( this.endTime.toDateString() === new Date().toDateString() ) {
+    if ( this.timeTilEndDay <= 0 ) {
       endTimeDisplay += 'Today'
     } else {
-      endTimeDisplay += new Intl.DateTimeFormat( 'en-US', { weekday: 'short' } ).format( this.endTime );
+      endTimeDisplay += this.endDate.weekday;
     }
 
-    let hour = this.endTime.getHours();
-    let minute = String( this.endTime.getMinutes() ).padStart( 2, '0' );
+    let hour = this.endDate.hours;
+    let minute = String( this.endDate.minutes ).padStart( 2, '0' );
     if ( hour === 0 ) {
       endTimeDisplay += ' 12:' + minute + ' AM)';
     } else if ( hour <= 11 ) {
@@ -98,8 +118,9 @@ export class TimeRemainingComponent implements OnInit {
 
   private reset() {
     clearInterval( this.updateTimer );
-    this.timeRemaining = this.parseDuration( this.timeRemainingIso );
-    this.endTime = new Date( this.endTimeIso );
+    this.timeRemaining = this.parseDuration( this.listingInfo.timeRemaining );
+    this.timeTilEndDay = this.parseDuration( this.listingInfo.timeTilEndDay );
+    this.endDate = this.parseDate( this.listingInfo.endTimeLocal );
 
     this.update();
 

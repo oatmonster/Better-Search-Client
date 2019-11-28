@@ -6,8 +6,8 @@
     </div>
     <div class="col">
       <p>Condition: {{ item?.ConditionDisplayName }}</p>
-      <p>Time left: <time-remaining *ngIf="item" [endTimeIso]="item?.EndTime" [timeRemainingIso]="item?.TimeRemaining"></time-remaining>
-      </p>
+      <!-- <p>Time left: <time-remaining *ngIf="item" [endTimeIso]="item?.EndTime" [timeRemainingIso]="item?.TimeRemaining"></time-remaining>
+      </p> -->
       <br>
       <p>{{ item?.ConvertedCurrentPrice.Value }} {{ item?.ConvertedCurrentPrice.CurrencyID }}</p>
     </div>
