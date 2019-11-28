@@ -22,6 +22,14 @@ export class ItemThumbnailComponent implements OnInit {
 
   constructor( private apiService: ApiService, private isoCountryService: IsoCountryService ) { }
 
+  getShipping() {
+    if ( this.item.shippingInfo.cost === 0 ) {
+      return 'Free shipping';
+    } else {
+      return `$${this.item.shippingInfo.cost.toFixed( 2 )} shipping`;
+    }
+  }
+
   toggleExpand() {
     if ( !this.fetched ) {
       this.fetched = true;

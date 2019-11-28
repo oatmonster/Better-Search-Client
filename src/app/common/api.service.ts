@@ -158,7 +158,9 @@ export interface IItem {
   watchCount: number,
   bidCount?: number,
   shippingInfo: {
-    shippingType: string,
+    type: string,
+    cost: number,
+    currencyId: string
   },
 }
 
