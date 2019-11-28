@@ -135,9 +135,14 @@ export interface IItem {
   category: {
     categoryId: string,
     categoryName: string,
+  },
+  listingInfo: {
+    startTimeUtc: string,
+    endTimeUtc: string,
+    endTimeLocal: string,
+    timeRemaining: string,
+    timeTilEndDay: string,
   }
-  startTime: string,
-  endTime: string,
   listingType: string,
   bestOfferEnabled: boolean,
   buyItNowEnabled: boolean,

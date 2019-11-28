@@ -36,8 +36,7 @@
         </div>
         <div class="col">
           <div style="padding-top: .5em">
-            <time-remaining [endTimeIso]="item.endTimeUtc" [timeRemainingIso]="item.timeRemaining"></time-remaining>
-            <br>
+            <time-remaining [listingInfo]="item.listingInfo"></time-remaining>
             <span class="text-secondary" *ngIf="countryName != undefined && item.country != 'US'">From {{ countryName
               }}</span>
           </div>

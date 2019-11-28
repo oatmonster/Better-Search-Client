@@ -133,7 +133,9 @@ export class SearchComponent implements OnInit {
         this.router.navigateByUrl( '' );
       }
 
-      let query: IQuery = { query: params.get( 'query' ) }
+      this.searchForm.patchValue( { query: params.get( 'query' ).trim() } )
+
+      let query: IQuery = { query: params.get( 'query' ).trim() }
 
       if ( params.has( 'page' ) && +params.get( 'page' ) <= 100 && +params.get( 'page' ) >= 1 ) {
         query.page = +params.get( 'page' );
