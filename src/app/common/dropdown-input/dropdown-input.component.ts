@@ -32,7 +32,7 @@ export class DropdownInputComponent implements ControlValueAccessor, OnInit, OnC
 
   items: Map<string, Array<string>> = new Map();
 
-  private onChange_ = ( _: any ) => { };
+  private onChange_ = ( _: any ) => { }
   private value_;
 
   get value() {

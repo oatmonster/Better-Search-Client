@@ -55,7 +55,7 @@ export class SearchComponent implements OnInit {
     private apiService: ApiService,
     private router: Router,
     private activatedRoute: ActivatedRoute
-  ) { };
+  ) { }
 
   search( {
     newSort = this.searchForm.value.sortBy,
@@ -135,7 +135,7 @@ export class SearchComponent implements OnInit {
 
       this.searchForm.patchValue( { query: params.get( 'query' ).trim() } )
 
-      let query: IQuery = { query: params.get( 'query' ).trim() }
+      let query: IQuery = { query: params.get( 'query' ).trim() };
 
       if ( params.has( 'page' ) && +params.get( 'page' ) <= 100 && +params.get( 'page' ) >= 1 ) {
         query.page = +params.get( 'page' );
@@ -150,8 +150,7 @@ export class SearchComponent implements OnInit {
       }
 
       // Asynchronous validations
-      let observables: any = {
-      }
+      let observables: any = {};
 
       if ( params.has( 'category' ) && params.get( 'category' ) !== '0' ) {
         observables.category = this.apiService.isValidCategory( params.get( 'category' ) );
@@ -164,8 +163,6 @@ export class SearchComponent implements OnInit {
       forkJoin( observables ).pipe<any>( defaultIfEmpty( {} ) ).subscribe( resDict => {
         if ( resDict.category ) query.category = params.get( 'category' );
         if ( resDict.condition ) query.condition = params.get( 'condition' );
-
-        // console.log( 'Query from URL:', query );
 
         this.apiService.searchItems( query ).subscribe( res => {
           this.currentState = {
@@ -191,8 +188,6 @@ export class SearchComponent implements OnInit {
 
         } );
       } );
-
-
     } );
   }
 }

@@ -128,7 +128,7 @@ export interface IItem {
   title: string,
   thumbnailUrl: string,
   country: string,
-  condition: {
+  condition?: {
     conditionId: string,
     conditionName: string,
   },
@@ -142,7 +142,7 @@ export interface IItem {
     endTimeLocal: string,
     timeRemaining: string,
     timeTilEndDay: string,
-  }
+  },
   listingType: string,
   bestOfferEnabled: boolean,
   buyItNowEnabled: boolean,
@@ -161,7 +161,7 @@ export interface IItem {
     type: string,
     cost: number,
     currencyId: string
-  },
+  }
 }
 
 export interface ISearchResult {

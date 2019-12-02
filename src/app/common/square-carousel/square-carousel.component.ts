@@ -16,7 +16,5 @@ export class SquareCarouselComponent implements OnInit {
   @Input()
   id: string = '';
 
-  ngOnInit() {
-
-  }
+  ngOnInit() { }
 }
