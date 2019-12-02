@@ -12,7 +12,7 @@ export class ItemDetailComponent implements OnInit {
 
   item: any;
 
-  constructor( private apiService: ApiService, private activatedRoute: ActivatedRoute ) { };
+  constructor( private apiService: ApiService, private activatedRoute: ActivatedRoute ) { }
 
   ngOnInit() {
     this.apiService.getItem( this.activatedRoute.snapshot.params[ 'id' ], { description: true } ).subscribe( res => {
