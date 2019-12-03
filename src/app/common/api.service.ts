@@ -127,6 +127,7 @@ export interface IItem {
   itemId: string,
   title: string,
   thumbnailUrl: string,
+  galleryUrls?: string[],
   country: string,
   condition?: {
     conditionId: string,
@@ -143,7 +144,7 @@ export interface IItem {
     timeRemaining: string,
     timeTilEndDay: string,
   },
-  listingType: string,
+  listingType: 'Advertisement' | 'Auction' | 'AuctionWithBIN' | 'FixedPrice' | 'OtherType',
   bestOfferEnabled: boolean,
   buyItNowEnabled: boolean,
   currentPrice: {
@@ -155,13 +156,14 @@ export interface IItem {
     currencyId: string,
   },
   sellingState: string,
-  watchCount: number,
+  watchCount?: number,
   bidCount?: number,
   shippingInfo: {
     type: string,
     cost: number,
-    currencyId: string
-  }
+    currencyId: string,
+  },
+  itemEbayUrl?: string,
 }
 
 export interface ISearchResult {
