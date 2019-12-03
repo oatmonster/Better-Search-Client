@@ -174,13 +174,9 @@ export class SearchComponent implements OnInit {
             condition: query.condition || '0'
           };
 
-          if ( res.status == 200 ) {
-            this.items = res.body.searchResult.items || [];
-            this.currentState.page = res.body.pagination.page;
-            this.totalPages = Math.min( 100, res.body.pagination.totalPages );
-          } else {
-            console.log( 'Invalid Search' );
-          }
+          this.items = res.searchResult.items || [];
+          this.currentState.page = res.pagination.page;
+          this.totalPages = Math.min( 100, res.pagination.totalPages );
 
           this.searchForm.patchValue( this.currentState );
           this.updateConditions();
