@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
-import { tap, map } from 'rxjs/operators';
+import { tap, map, catchError, retry } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../environments/environment';
@@ -33,7 +33,7 @@ export class ApiService {
       environment.baseUrl + 'v2/search', { observe: 'response', params: params }
     ).pipe( map( res => {
       // TODO: Check response status code
-      console.log( 'Search Items Response Body:', res.body );
+      // console.log( 'Search Items Response Body:', res.body );
       return res.body;
     } ) );
   }
@@ -41,7 +41,7 @@ export class ApiService {
   getItem( id: string ): Observable<IItem> {
     let url = environment.baseUrl + 'v2/items/' + id;
     return this.httpClient.get<IItem>( url, { observe: 'response' } ).pipe( map( res => {
-      console.log( 'Get Item Response Body:', res.body );
+      // console.log( 'Get Item Response Body:', res.body );
       return res.body;
     } ) );
   }
@@ -54,35 +54,54 @@ export class ApiService {
     } ) );
   }
 
-  getItemPictures( id: string ): Observable<HttpResponse<string[]>> {
+  getItemPictures( id: string ): Observable<string[]> {
     let url = environment.baseUrl + 'v2/items/' + id + '/pictures';
-    return this.httpClient.get<string[]>( url, { observe: 'response' } );
-  }
-
-  getBaseCategories(): Observable<any> {
-    return this.httpClient.get( environment.baseUrl + 'v1/category' ).pipe( tap( res => {
-      // console.log( 'Categories Response:', res );
+    return this.httpClient.get<string[]>( url, { observe: 'response' } ).pipe( map( res => {
+      return res.body;
     } ) );
   }
 
-  getCategoryConditions( categoryId: string ): Observable<any> {
-    return this.httpClient.get( environment.baseUrl + 'v1/category/' + categoryId + '/condition' ).pipe( tap( res => {
-      // console.log( 'Category Condition Response:', res );
-    } ) );
+  getBaseCategories(): Observable<ICategory[]> {
+    let url = environment.baseUrl + 'v2/categories';
+    return this.httpClient.get<ICategory[]>( url, { observe: 'response' } ).pipe(
+      map( res => {
+        // console.log( 'Categories Response:', res );
+        return res.body;
+      } ),
+      retry( 2 )
+    );
   }
 
-  isValidCategory( id: string ): Observable<boolean> {
+  getCategoryConditions( categoryId: string ): Observable<ICondition[]> {
+    let url = environment.baseUrl + 'v2/categories/' + categoryId + '/conditions';
+    return this.httpClient.get<ICondition[]>( url, { observe: 'response' } ).pipe(
+      map( res => {
+        // console.log( 'Category Condition response body:', res.body );
+        return res.body;
+      } ),
+      retry( 2 )
+    );
+  }
+
+  isValidCategory( id: string ): Observable<any> {
     if ( id === '0' ) {
       return new Observable<boolean>( observer => {
         observer.next( true );
         observer.complete();
       } );
     }
-    return this.httpClient.get<any>( environment.baseUrl + 'v1/category/' + id ).pipe( tap( res => {
-      // console.log( 'Valid Category Response:', res );
-    } ) ).pipe( map( res => {
-      return res.CategoryCount[ 0 ] == 1;
-    } ) );
+    let url = environment.baseUrl + 'v2/categories/' + id;
+    return this.httpClient.get<ICategory>( url, { observe: 'response' } ).pipe(
+      map( res => {
+        return true;
+      } ),
+      catchError( err => {
+        return new Observable<boolean>( observer => {
+          observer.next( false );
+          observer.complete();
+        } );
+      } )
+    );
   }
 
   isValidCondition( categoryId: string, conditionId: string ): Observable<boolean> {
@@ -101,19 +120,32 @@ export class ApiService {
       if ( conditionId == 'New' || conditionId == 'Used' ) return trueObs;
       else return falseObs;
     } else {
-      return this.httpClient.get<any>( environment.baseUrl + 'v1/category/' + categoryId + '/condition' ).pipe( map( res => {
-        if ( res.hasOwnProperty( 'Category' ) ) {
-          let conditions = [];
-          res.Category[ 0 ].ConditionValues[ 0 ].Condition.forEach( ( element, index ) => {
-            conditions.push( element.ID[ 0 ] );
-          } );
-          return conditions.includes( conditionId );
-        } else {
-          return conditionId == 'Used';
-        }
-      } ) );
+      let url = environment.baseUrl + 'v2/categories/' + categoryId + '/conditions'
+      return this.httpClient.get<ICondition[]>( url, { observe: 'response' } ).pipe(
+        map( res => {
+          if ( res.body.length > 0 ) {
+            let conditions = res.body.map( condition => {
+              return condition.conditionId;
+            } );
+            return conditions.includes( conditionId );
+          } else {
+            return conditionId == 'Used';
+          }
+        } )
+      );
     }
   }
+}
+
+export interface ICategory {
+  categoryId: string,
+  categoryName: string,
+  parentId?: string,
+}
+
+export interface ICondition {
+  conditionId: string,
+  conditionName: string,
 }
 
 export interface IQuery {

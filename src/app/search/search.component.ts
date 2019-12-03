@@ -76,7 +76,6 @@ export class SearchComponent implements OnInit {
       if ( +newCategory > 0 ) params.category = newCategory;
       if ( newCategory != this.currentState.category ) newCondition = '0';
       if ( +newCondition != 0 ) params.condition = newCondition;
-      console.log( "Params:", params );
       this.router.navigate( [ 'search', params ] );
     }
 
@@ -92,9 +91,9 @@ export class SearchComponent implements OnInit {
       this.conditions = conditions;
     } else {
       this.apiService.getCategoryConditions( this.searchForm.value.category ).subscribe( res => {
-        if ( res.hasOwnProperty( 'Category' ) ) {
-          res.Category[ 0 ].ConditionValues[ 0 ].Condition.forEach( ( element, index ) => {
-            conditions.set( element.ID[ 0 ], element.DisplayName[ 0 ] );
+        if ( res.length > 0 ) {
+          res.forEach( ( condition ) => {
+            conditions.set( condition.conditionId, condition.conditionName );
           } );
           conditions.set( 'Unspecified', 'Unspecified' );
         } else {
@@ -113,14 +112,12 @@ export class SearchComponent implements OnInit {
 
   updateCategories() {
     this.apiService.getBaseCategories().subscribe( res => {
-      if ( res.Ack[ 0 ] === 'Success' ) {
-        let categories = new Map();
-        categories.set( '0', 'All Categories' );
-        res.CategoryArray[ 0 ].Category.forEach( element => {
-          categories.set( element.CategoryID[ 0 ], element.CategoryName[ 0 ] );
-        } );
-        this.categories = categories;
-      }
+      let categories = new Map();
+      categories.set( '0', 'All Categories' );
+      res.forEach( category => {
+        categories.set( category.categoryId, category.categoryName );
+      } );
+      this.categories = categories;
     } );
   }
 
