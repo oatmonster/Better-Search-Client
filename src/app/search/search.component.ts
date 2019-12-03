@@ -92,7 +92,7 @@ export class SearchComponent implements OnInit {
       this.conditions = conditions;
     } else {
       this.apiService.getCategoryConditions( this.searchForm.value.category ).subscribe( res => {
-        if ( res.Category != undefined ) {
+        if ( res.hasOwnProperty( 'Category' ) ) {
           res.Category[ 0 ].ConditionValues[ 0 ].Condition.forEach( ( element, index ) => {
             conditions.set( element.ID[ 0 ], element.DisplayName[ 0 ] );
           } );

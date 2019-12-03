@@ -102,7 +102,7 @@ export class ApiService {
       else return falseObs;
     } else {
       return this.httpClient.get<any>( environment.baseUrl + 'v1/category/' + categoryId + '/condition' ).pipe( map( res => {
-        if ( res.Category != undefined ) {
+        if ( res.hasOwnProperty( 'Category' ) ) {
           let conditions = [];
           res.Category[ 0 ].ConditionValues[ 0 ].Condition.forEach( ( element, index ) => {
             conditions.push( element.ID[ 0 ] );
