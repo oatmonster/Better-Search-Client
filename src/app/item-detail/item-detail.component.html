@@ -2,15 +2,14 @@
   <div class="row">
     <div class="col">
       <!-- Gallery Carousel -->
-      <square-carousel [items]="item?.PictureURL"></square-carousel>
+      <square-carousel [images]="item?.galleryUrls"></square-carousel>
     </div>
     <div class="col">
-      <p>Condition: {{ item?.ConditionDisplayName }}</p>
-      <!-- <p>Time left: <time-remaining *ngIf="item" [endTimeIso]="item?.EndTime" [timeRemainingIso]="item?.TimeRemaining"></time-remaining>
-      </p> -->
+      <p>Condition: {{ item?.condition.conditionName }}</p>
+      <time-remaining *ngIf="item != undefined" [listingInfo]="item.listingInfo"></time-remaining>
       <br>
-      <p>{{ item?.ConvertedCurrentPrice.Value }} {{ item?.ConvertedCurrentPrice.CurrencyID }}</p>
+      <p>{{ item?.currentPrice.price.toFixed(2) }} {{ item?.currentPrice.currencyId }}</p>
     </div>
   </div>
-  <div [innerHTML]="item?.Description"></div>
+  <div [innerHTML]="item?.description"></div>
 </div>

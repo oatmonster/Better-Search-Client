@@ -55,7 +55,7 @@ export class SearchComponent implements OnInit {
     private apiService: ApiService,
     private router: Router,
     private activatedRoute: ActivatedRoute
-  ) { };
+  ) { }
 
   search( {
     newSort = this.searchForm.value.sortBy,
@@ -76,7 +76,6 @@ export class SearchComponent implements OnInit {
       if ( +newCategory > 0 ) params.category = newCategory;
       if ( newCategory != this.currentState.category ) newCondition = '0';
       if ( +newCondition != 0 ) params.condition = newCondition;
-      console.log( "Params:", params );
       this.router.navigate( [ 'search', params ] );
     }
 
@@ -92,9 +91,9 @@ export class SearchComponent implements OnInit {
       this.conditions = conditions;
     } else {
       this.apiService.getCategoryConditions( this.searchForm.value.category ).subscribe( res => {
-        if ( res.Category != undefined ) {
-          res.Category[ 0 ].ConditionValues[ 0 ].Condition.forEach( ( element, index ) => {
-            conditions.set( element.ID[ 0 ], element.DisplayName[ 0 ] );
+        if ( res.length > 0 ) {
+          res.forEach( ( condition ) => {
+            conditions.set( condition.conditionId, condition.conditionName );
           } );
           conditions.set( 'Unspecified', 'Unspecified' );
         } else {
@@ -113,14 +112,12 @@ export class SearchComponent implements OnInit {
 
   updateCategories() {
     this.apiService.getBaseCategories().subscribe( res => {
-      if ( res.Ack[ 0 ] === 'Success' ) {
-        let categories = new Map();
-        categories.set( '0', 'All Categories' );
-        res.CategoryArray[ 0 ].Category.forEach( element => {
-          categories.set( element.CategoryID[ 0 ], element.CategoryName[ 0 ] );
-        } );
-        this.categories = categories;
-      }
+      let categories = new Map();
+      categories.set( '0', 'All Categories' );
+      res.forEach( category => {
+        categories.set( category.categoryId, category.categoryName );
+      } );
+      this.categories = categories;
     } );
   }
 
@@ -135,7 +132,7 @@ export class SearchComponent implements OnInit {
 
       this.searchForm.patchValue( { query: params.get( 'query' ).trim() } )
 
-      let query: IQuery = { query: params.get( 'query' ).trim() }
+      let query: IQuery = { query: params.get( 'query' ).trim() };
 
       if ( params.has( 'page' ) && +params.get( 'page' ) <= 100 && +params.get( 'page' ) >= 1 ) {
         query.page = +params.get( 'page' );
@@ -150,8 +147,7 @@ export class SearchComponent implements OnInit {
       }
 
       // Asynchronous validations
-      let observables: any = {
-      }
+      let observables: any = {};
 
       if ( params.has( 'category' ) && params.get( 'category' ) !== '0' ) {
         observables.category = this.apiService.isValidCategory( params.get( 'category' ) );
@@ -165,8 +161,6 @@ export class SearchComponent implements OnInit {
         if ( resDict.category ) query.category = params.get( 'category' );
         if ( resDict.condition ) query.condition = params.get( 'condition' );
 
-        // console.log( 'Query from URL:', query );
-
         this.apiService.searchItems( query ).subscribe( res => {
           this.currentState = {
             query: query.query,
@@ -177,13 +171,9 @@ export class SearchComponent implements OnInit {
             condition: query.condition || '0'
           };
 
-          if ( res.status == 200 ) {
-            this.items = res.body.searchResult.items || [];
-            this.currentState.page = res.body.pagination.page;
-            this.totalPages = Math.min( 100, res.body.pagination.totalPages );
-          } else {
-            console.log( 'Invalid Search' );
-          }
+          this.items = res.searchResult.items || [];
+          this.currentState.page = res.pagination.page;
+          this.totalPages = Math.min( 100, res.pagination.totalPages );
 
           this.searchForm.patchValue( this.currentState );
           this.updateConditions();
@@ -191,8 +181,6 @@ export class SearchComponent implements OnInit {
 
         } );
       } );
-
-
     } );
   }
 }

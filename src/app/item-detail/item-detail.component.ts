@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { ApiService } from '../common/api.service';
+import { ApiService, IItem } from '../common/api.service';
 
 @Component( {
   selector: 'item-detail',
@@ -10,14 +10,13 @@ import { ApiService } from '../common/api.service';
 } )
 export class ItemDetailComponent implements OnInit {
 
-  item: any;
+  item: IItem;
 
-  constructor( private apiService: ApiService, private activatedRoute: ActivatedRoute ) { };
+  constructor( private apiService: ApiService, private activatedRoute: ActivatedRoute ) { }
 
   ngOnInit() {
-    this.apiService.getItem( this.activatedRoute.snapshot.params[ 'id' ], { description: true } ).subscribe( res => {
+    this.apiService.getItem( this.activatedRoute.snapshot.params[ 'id' ] ).subscribe( res => {
       this.item = res;
-      // console.log( this.item );
     } );
   }
 }
