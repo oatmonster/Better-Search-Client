@@ -23,7 +23,7 @@ export class PageInputComponent implements ControlValueAccessor, OnInit, OnChang
   @Input()
   toDisplay: number = 8;
 
-  private onChange_ = ( _: any ) => { };
+  private onChange_ = ( _: any ) => { }
   private value_;
 
   pages: number[] = [];

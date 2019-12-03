@@ -8,7 +8,7 @@ import { Component, OnInit, Input } from '@angular/core';
 export class SquareCarouselComponent implements OnInit {
 
   @Input()
-  items: string[] = [];
+  images: string[] = [];
 
   @Input()
   thumbnails: boolean = false;
@@ -16,7 +16,5 @@ export class SquareCarouselComponent implements OnInit {
   @Input()
   id: string = '';
 
-  ngOnInit() {
-
-  }
+  ngOnInit() { }
 }

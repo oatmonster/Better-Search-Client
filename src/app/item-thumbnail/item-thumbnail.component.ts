@@ -34,7 +34,7 @@ export class ItemThumbnailComponent implements OnInit {
     if ( !this.fetched ) {
       this.fetched = true;
       this.apiService.getItemPictures( this.item.itemId ).subscribe( res => {
-        this.gallery = res.body;
+        this.gallery = res;
       } );
     }
     this.expanded = !this.expanded;
