@@ -9,7 +9,7 @@ import { environment } from '../../environments/environment';
 export class ApiService {
   constructor( private httpClient: HttpClient ) { };
 
-  searchItems( queryForm: IQuery ): Observable<HttpResponse<ISearchResult>> {
+  searchItems( queryForm: IQuery ): Observable<ISearchResult> {
     let params = new HttpParams().set( 'query', queryForm.query );
 
     // Set optional params
@@ -31,16 +31,26 @@ export class ApiService {
 
     return this.httpClient.get<ISearchResult>(
       environment.baseUrl + 'v2/search', { observe: 'response', params: params }
-    ).pipe( tap( res => {
-      console.log( 'Search Items Response:', res.body );
+    ).pipe( map( res => {
+      // TODO: Check response status code
+      console.log( 'Search Items Response Body:', res.body );
+      return res.body;
     } ) );
   }
 
-  getItem( id: string, { description = false } = {} ): Observable<any> {
-    let url = environment.baseUrl + 'v1/item/' + id;
-    if ( description == true ) url += '/description';
-    return this.httpClient.get( url ).pipe( tap( res => {
-      console.log( 'Get Item Response:', res );
+  getItem( id: string ): Observable<IItem> {
+    let url = environment.baseUrl + 'v2/items/' + id;
+    return this.httpClient.get<IItem>( url, { observe: 'response' } ).pipe( map( res => {
+      console.log( 'Get Item Response Body:', res.body );
+      return res.body;
+    } ) );
+  }
+
+  getItemDescription( id: string ): Observable<string> {
+    let url = environment.baseUrl + 'v2/items/' + id + '/description';
+    return this.httpClient.get<string>( url, { observe: 'response' } ).pipe( map( res => {
+      //console.log('Get Item Description Response Body:', res.body);
+      return res.body;
     } ) );
   }
 
@@ -163,6 +173,7 @@ export interface IItem {
     cost: number,
     currencyId: string,
   },
+  description?: string,
   itemEbayUrl?: string,
 }
 
