@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import * as moment from 'moment-timezone';
 import { ApiService } from './api.service';
 
 @Injectable( {
@@ -7,11 +8,62 @@ import { ApiService } from './api.service';
 export class TimeService {
 
   constructor( private apiService: ApiService ) {
-    console.log( 'created' );
+    this.sync();
   }
 
-  isoTime: number;
-  timer
+  private timeZone: string;
+  private isoTime: number;
+  private timer
+
+  ready(): boolean {
+    return this.isoTime !== undefined;
+  }
+
+  now(): number {
+    return this.isoTime;
+  }
+
+  toLocal( utc ) {
+    let local = moment( utc ).tz( this.timeZone );
+    if ( local !== undefined ) {
+      return {
+        weekday: local.day(),
+        date: local.date(),
+        month: local.month(),
+        year: local.year(),
+        hours: local.hour(),
+        minutes: local.minute(),
+        seconds: local.second(),
+        milliseconds: local.millisecond()
+      };
+    } else {
+      return {};
+    }
+  }
+
+  sync() {
+    let t0: number = Date.now();
+    this.apiService.getTime().subscribe(
+      res => {
+        this.timeZone = res.timeZone;
+        let t1 = new Date( res.ebayTime ).getTime(),
+          t2 = new Date( res.ebayTime ).getTime(),
+          t3 = Date.now();
+
+        let results = this.ntp( t0, t1, t2, t3 );
+
+        clearInterval( this.timer );
+        this.isoTime = t3 + results.offset;
+        this.timer = setInterval( () => {
+          this.isoTime += 100;
+        }, 100 );
+      },
+      error => {
+        console.error( 'Failed to get server time, retrying...' );
+        this.sync();
+      }
+    );
+  }
 
   // The NTP algorithm
   // t0 is the client's timestamp of the request packet transmission,
@@ -25,21 +77,5 @@ export class TimeService {
     };
   }
 
-  sync() {
-    let t0: number = Date.now();
-    this.apiService.getTime().subscribe( res => {
-      let t1 = new Date( res.ebayTime ).getTime(),
-        t2 = new Date( res.ebayTime ).getTime(),
-        t3 = new Date();
 
-      let results = this.ntp( t0, t1, t2, t3.getTime() );
-      console.log( 'NTP delay:', results.roundTripDelay, 'NTP offset:', results.offset, 'Corrected: ', ( new Date( t3.getTime() + results.offset ) ) );
-      console.log( 'Ebay Time:' );
-      console.log( res.ebayTime );
-      console.log( 'Client Time:' );
-      console.log( t3.toISOString() );
-      console.log( 'Corrected Time' );
-      console.log( new Date( t3.getTime() + results.offset ).toISOString() );
-    } );
-  }
 }

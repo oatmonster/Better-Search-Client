@@ -9,7 +9,5 @@ import { TimeService } from './common/time.service';
 export class AppComponent {
   title = 'client';
 
-  constructor( private timeService: TimeService ) {
-    timeService.sync();
-  }
+  constructor( private timeService: TimeService ) { }
 }

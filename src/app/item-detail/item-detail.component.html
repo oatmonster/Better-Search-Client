@@ -6,7 +6,7 @@
     </div>
     <div class="col">
       <p>Condition: {{ item?.condition.conditionName }}</p>
-      <time-remaining *ngIf="item != undefined" [listingInfo]="item.listingInfo"></time-remaining>
+      <time-remaining *ngIf="item != undefined" [endTimeUtc]="item.listingInfo.endTimeUtc"></time-remaining>
       <br>
       <p>{{ item?.currentPrice.price.toFixed(2) }} {{ item?.currentPrice.currencyId }}</p>
     </div>
