@@ -21,7 +21,7 @@
             </span>
             <br>
             <span *ngIf="item.listingType === 'Auction' || item.listingType === 'AuctionWithBIN'; else buyItNow">
-              {{ item.bidCount }} Bids
+              {{ item.bidCount + ( item.bidCount === 1 ? ' Bid' : ' Bids' ) }}
             </span>
             <ng-template #buyItNow>
               Buy It Now

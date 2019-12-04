@@ -6,6 +6,7 @@ import { forkJoin } from 'rxjs';
 import { defaultIfEmpty } from 'rxjs/operators';
 
 import { ApiService, IQuery, IResponse, IItem, ISearchResult } from '../common/api.service';
+import { TimeService } from '../common/time.service';
 import { staggerList } from '../common/animations';
 
 @Component( {
@@ -54,7 +55,8 @@ export class SearchComponent implements OnInit {
   constructor(
     private apiService: ApiService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private timeService: TimeService
   ) { }
 
   search( {
@@ -78,7 +80,6 @@ export class SearchComponent implements OnInit {
       if ( +newCondition != 0 ) params.condition = newCondition;
       this.router.navigate( [ 'search', params ] );
     }
-
   }
 
   updateConditions() {
@@ -106,7 +107,7 @@ export class SearchComponent implements OnInit {
   }
 
   submit() {
-    console.log( 'Form Value on Submit:', this.searchForm.value );
+    // console.log( 'Form Value on Submit:', this.searchForm.value );
     this.search();
   }
 

@@ -17,7 +17,9 @@ export class TimeRemainingComponent implements OnInit {
 
   private updateTimer;
 
-  private timeRemaining: number;
+  timeRemaining: number;
+
+  timeRemainingClient: number;
 
   private timeTilEndDay: number;
 
@@ -58,6 +60,8 @@ export class TimeRemainingComponent implements OnInit {
   private update() {
     this.timeRemaining -= 1;
     this.timeTilEndDay -= 1;
+
+    this.timeRemainingClient = Math.floor( ( new Date( this.listingInfo.endTimeUtc ).getTime() - Date.now() ) / 1000 );
 
     let days = Math.floor( this.timeRemaining / ( 60 * 60 * 24 ) );
     let hours = Math.floor( ( this.timeRemaining % ( 60 * 60 * 24 ) ) / ( 60 * 60 ) );

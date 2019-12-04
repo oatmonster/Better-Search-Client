@@ -9,6 +9,10 @@ import { environment } from '../../environments/environment';
 export class ApiService {
   constructor( private httpClient: HttpClient ) { };
 
+  getTime(): Observable<any> {
+    return this.httpClient.get( environment.baseUrl + 'v2/time' );
+  }
+
   searchItems( queryForm: IQuery ): Observable<ISearchResult> {
     let params = new HttpParams().set( 'query', queryForm.query );
 
@@ -41,7 +45,7 @@ export class ApiService {
   getItem( id: string ): Observable<IItem> {
     let url = environment.baseUrl + 'v2/items/' + id;
     return this.httpClient.get<IItem>( url, { observe: 'response' } ).pipe( map( res => {
-      // console.log( 'Get Item Response Body:', res.body );
+      console.log( 'Get Item Response Body:', res.body );
       return res.body;
     } ) );
   }
