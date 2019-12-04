@@ -8,6 +8,7 @@ import { RouterModule } from '@angular/router';
 import { ApiService } from './common/api.service';
 import { LoadingService } from './loading/loading.service';
 import { IsoCountryService } from './common/iso-country.service';
+import { TimeService } from './common/time.service';
 
 import { AppComponent } from './app.component';
 import { SearchComponent } from './search/search.component';
@@ -51,6 +52,7 @@ import { appRoutes } from './routes';
     ApiService,
     LoadingService,
     IsoCountryService,
+    TimeService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: LoadingInterceptor,
