@@ -41,8 +41,10 @@
     "@angular/language-service": "~8.2.14",
     "@types/jasmine": "~2.8.8",
     "@types/jasminewd2": "~2.0.3",
+    "@types/moment-timezone": "^0.5.12",
     "@types/node": "~8.9.4",
     "codelyzer": "^5.0.1",
+    "eslint": "^6.7.2",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "^4.4.1",
@@ -53,7 +55,6 @@
     "protractor": "~5.4.0",
     "ts-node": "~7.0.0",
     "tslint": "~5.11.0",
-    "eslint": "^6.7.2",
     "typescript": "~3.4"
   }
 }
