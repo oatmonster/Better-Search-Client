@@ -60,7 +60,6 @@ export class PageInputComponent implements ControlValueAccessor, OnInit, OnChang
     for ( let i = minPage; i <= maxPage; i++ ) {
       this.pages.push( i );
     }
-    console.log( typeof ( this.currentPage ) );
   }
 
   toPage( page: number ) {
