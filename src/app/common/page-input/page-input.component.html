@@ -1,14 +1,14 @@
 <div *ngIf="pages.length > 0">
   <ul class="pagination justify-content-center">
-    <li class="page-item" type="submit" [ngClass]="{ 'disabled': currentPage == 1 }">
-      <button class="page-link" (click)="prev()">
+    <li class="page-item" [ngClass]="{ 'disabled': currentPage === 1 }">
+      <button class="page-link" type="submit" (click)="prev()">
         <span>&laquo;</span>
       </button>
     </li>
-    <li class="page-item" *ngFor="let page of pages" [ngClass]="{ 'active': currentPage == page, 'd-none': currentPage != page, 'd-md-block': currentPage != page }">
-      <button class="page-link" type="submit" [attr.disabled]="currentPage == page ? true : null" (click)="toPage(page)">{{page}}</button>
+    <li class="page-item" *ngFor="let page of pages" [ngClass]="{ 'active': currentPage === page, 'd-none': currentPage !== page, 'd-md-block': currentPage !== page }">
+      <button class="page-link" type="submit" [attr.disabled]="currentPage === page ? true : null" (click)="toPage(page)">{{page}}</button>
     </li>
-    <li class="page-item" [ngClass]="{ 'disabled': currentPage == 100 }">
+    <li class="page-item" [ngClass]="{ 'disabled': currentPage === 100 }">
       <button class="page-link" type="submit" (click)="next()">
         <span>&raquo;</span>
       </button>

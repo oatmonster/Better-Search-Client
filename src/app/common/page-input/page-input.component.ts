@@ -24,7 +24,7 @@ export class PageInputComponent implements ControlValueAccessor, OnInit, OnChang
   toDisplay: number = 8;
 
   private onChange_ = ( _: any ) => { }
-  private value_;
+  private value_: number;
 
   pages: number[] = [];
 
@@ -60,6 +60,7 @@ export class PageInputComponent implements ControlValueAccessor, OnInit, OnChang
     for ( let i = minPage; i <= maxPage; i++ ) {
       this.pages.push( i );
     }
+    console.log( typeof ( this.currentPage ) );
   }
 
   toPage( page: number ) {
