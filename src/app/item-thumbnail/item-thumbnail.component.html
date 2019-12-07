@@ -21,7 +21,7 @@
             </span>
             <br>
             <span *ngIf="item.listingType === 'Auction' || item.listingType === 'AuctionWithBIN'; else buyItNow">
-              {{ item.bidCount }} Bids
+              {{ item.bidCount + ( item.bidCount === 1 ? ' Bid' : ' Bids' ) }}
             </span>
             <ng-template #buyItNow>
               Buy It Now
@@ -36,7 +36,7 @@
         </div>
         <div class="col">
           <div style="padding-top: .5em">
-            <time-remaining [listingInfo]="item.listingInfo"></time-remaining>
+            <time-remaining [endTimeUtc]="item.listingInfo.endTimeUtc"></time-remaining>
             <span class="text-secondary" *ngIf="countryName != undefined && item.country != 'US'">From {{ countryName
               }}</span>
           </div>

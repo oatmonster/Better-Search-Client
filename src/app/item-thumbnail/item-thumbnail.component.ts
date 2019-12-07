@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 
 import { ApiService, IItem } from '../common/api.service';
 import { IsoCountryService } from '../common/iso-country.service';
+import { TimeService } from '../common/time.service';
 
 @Component( {
   selector: 'item-thumbnail',
