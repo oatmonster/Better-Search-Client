@@ -41,7 +41,6 @@ export class SearchService {
       // Clean url
       if ( query.query !== currentState.query ) {
         delete params.page;
-        console.log( params );
       }
       params.query = params.query.trim();
       if ( params.hasOwnProperty( 'page' ) && params.page === 1 ) delete params.page;

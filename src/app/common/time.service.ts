@@ -58,9 +58,8 @@ export class TimeService {
           this.isoTime += 100;
         }, 100 );
       },
-      error => {
-        console.error( 'Failed to get server time, retrying...' );
-        this.sync();
+      err => {
+        console.error( 'Failed to get server time' );
       }
     );
   }
