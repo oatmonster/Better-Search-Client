@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { tap, map, catchError, retry } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 
 import { environment } from '../../environments/environment';
 
@@ -35,11 +35,16 @@ export class ApiService {
 
     return this.httpClient.get<ISearchResult>(
       environment.baseUrl + 'v2/search', { observe: 'response', params: params }
-    ).pipe( map( res => {
-      // TODO: Check response status code
-      // console.log( 'Search Items Response Body:', res.body );
-      return res.body;
-    } ) );
+    ).pipe(
+      map( res => {
+        // TODO: Check response status code
+        // console.log( 'Search Items Response Body:', res.body );
+        return res.body;
+      } ),
+      catchError( err => {
+        return throwError( err );
+      } ),
+    );
   }
 
   getItem( id: string ): Observable<IItem> {
@@ -72,7 +77,7 @@ export class ApiService {
         // console.log( 'Categories Response:', res );
         return res.body;
       } ),
-      retry( 2 )
+      retry( 2 ),
     );
   }
 
@@ -83,7 +88,7 @@ export class ApiService {
         // console.log( 'Category Condition response body:', res.body );
         return res.body;
       } ),
-      retry( 2 )
+      retry( 2 ),
     );
   }
 
@@ -104,7 +109,7 @@ export class ApiService {
           observer.next( false );
           observer.complete();
         } );
-      } )
+      } ),
     );
   }
 
@@ -119,9 +124,9 @@ export class ApiService {
       observer.complete();
     } );
 
-    if ( conditionId == '0' || conditionId == 'Unspecified' ) return trueObs;
+    if ( conditionId === '0' || conditionId === 'Unspecified' ) return trueObs;
     else if ( categoryId === '0' ) {
-      if ( conditionId == 'New' || conditionId == 'Used' ) return trueObs;
+      if ( conditionId === 'New' || conditionId === 'Used' ) return trueObs;
       else return falseObs;
     } else {
       let url = environment.baseUrl + 'v2/categories/' + categoryId + '/conditions'
@@ -133,7 +138,7 @@ export class ApiService {
             } );
             return conditions.includes( conditionId );
           } else {
-            return conditionId == 'Used';
+            return conditionId === 'Used';
           }
         } )
       );
@@ -153,7 +158,7 @@ export interface ICondition {
 }
 
 export interface IQuery {
-  query?: string,
+  query: string,
   page?: number,
   sortBy?: string,
   listType?: string,
@@ -219,6 +224,7 @@ export interface ISearchResult {
   pagination: {
     page: number,
     totalPages: number,
+    totalEntries: number,
     entriesPerPage: number,
   },
   searchEbayUrl: string,
