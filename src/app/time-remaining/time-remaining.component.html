@@ -1,5 +1,5 @@
 <div [ngClass]="{ 'text-danger': status === 'urgent', 'text-secondary': status === 'ended'}">
   {{ timeRemainingDisplay }}
   <br>
-  {{ endTimeDisplay }}
+  <span *ngIf="status !== 'ended'">{{ endTimeDisplay }}</span>
 </div>

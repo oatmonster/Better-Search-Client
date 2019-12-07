@@ -19,8 +19,8 @@
         <!-- Listing Type -->
         <div class="col">
           <div class="btn-group">
-            <button class="btn btn-light" type="button" *ngFor="let listType of types | keyvalue" (click)="search( { newListType: listType.key } )"
-              [ngClass]="{ active: searchForm.value.listType == listType.key }">{{ listType.value }}</button>
+            <button class="btn btn-light" type="button" *ngFor="let listType of types | keyvalue" (click)="changeListType( listType.key )"
+              [ngClass]="{ active: searchForm.value.listType === listType.key }">{{ listType.value }}</button>
           </div>
         </div>
         <!-- Sort Order -->
@@ -38,16 +38,16 @@
     <!-- Item List -->
     <ul class="list-group">
       <div [@staggerList]="currentState">
-        <li class="list-group-item border-left-0 border-right-0" *ngFor="let item of items; index as i">
+        <li class="list-group-item border-left-0 border-right-0" *ngFor="let item of results?.searchResult.items; index as i">
           <item-thumbnail [item]="item" [index]="i"></item-thumbnail>
         </li>
       </div>
     </ul>
     <!-- Pagination -->
     <br>
-    <div *ngIf="pagination.totalEntries && +pagination?.totalEntries[0] == 0">
+    <div *ngIf="results?.pagination.totalEntries && results?.pagination.totalEntries === 0">
       <p>No Results :(</p>
     </div>
-    <page-input formControlName="page" [totalPages]="totalPages" [currentPage]=[currentState?.page]></page-input>
+    <page-input formControlName="page" [totalPages]="results?.pagination.totalPages" [currentPage]="currentState?.page"></page-input>
   </form>
 </div>

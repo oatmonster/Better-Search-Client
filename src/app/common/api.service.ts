@@ -1,13 +1,43 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
-import { tap, map, catchError, retry } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { tap, map, catchError, retry, retryWhen, mergeMap } from 'rxjs/operators';
+import { Observable, throwError, timer, observable } from 'rxjs';
 
 import { environment } from '../../environments/environment';
 
 @Injectable()
 export class ApiService {
   constructor( private httpClient: HttpClient ) { };
+
+  private retryStrategy = ( {
+    maxRetryAttempts = 3,
+    excludedStatusCodes = [],
+  }: {
+      maxRetryAttempts?: number,
+      excludedStatusCodes?: number[],
+      name?: string,
+    } = {} ) => ( attempts: Observable<any> ) => {
+      return attempts.pipe(
+        mergeMap( ( err, i ) => {
+          const retryAttempt = i + 1;
+          if ( retryAttempt > maxRetryAttempts || excludedStatusCodes.find( e => e === err.status ) ) {
+            return throwError( err );
+          }
+          if ( name ) {
+            console.error( 'Retrying ' + name + ' attempt ' + i + '...' );
+          } else {
+            console.error( 'Retrying attempt ' + i + '...' );
+          }
+          return timer( 100 );
+        } ),
+      );
+    }
+
+  getTime(): Observable<any> {
+    return this.httpClient.get( environment.baseUrl + 'v2/time' ).pipe(
+      retryWhen( this.retryStrategy( { name: 'getTime' } ) ),
+    );
+  }
 
   searchItems( queryForm: IQuery ): Observable<ISearchResult> {
     let params = new HttpParams().set( 'query', queryForm.query );
@@ -31,55 +61,88 @@ export class ApiService {
 
     return this.httpClient.get<ISearchResult>(
       environment.baseUrl + 'v2/search', { observe: 'response', params: params }
-    ).pipe( map( res => {
-      // TODO: Check response status code
-      // console.log( 'Search Items Response Body:', res.body );
-      return res.body;
-    } ) );
+    ).pipe(
+      retryWhen( this.retryStrategy( {
+        excludedStatusCodes: [ 400 ],
+        name: 'search',
+      } ) ),
+      map( res => {
+        // TODO: Check response status code
+        // console.log( 'Search Items Response Body:', res.body );
+        return res.body;
+      } ),
+      catchError( err => {
+        return throwError( err );
+      } ),
+    );
   }
 
   getItem( id: string ): Observable<IItem> {
     let url = environment.baseUrl + 'v2/items/' + id;
-    return this.httpClient.get<IItem>( url, { observe: 'response' } ).pipe( map( res => {
-      // console.log( 'Get Item Response Body:', res.body );
-      return res.body;
-    } ) );
+    return this.httpClient.get<IItem>( url, { observe: 'response' } ).pipe(
+      retryWhen( this.retryStrategy( {
+        excludedStatusCodes: [ 400 ],
+        name: 'getItem',
+      } ) ),
+      map( res => {
+        // console.log( 'Get Item Response Body:', res.body );
+        return res.body;
+      } ),
+    );
   }
 
   getItemDescription( id: string ): Observable<string> {
     let url = environment.baseUrl + 'v2/items/' + id + '/description';
-    return this.httpClient.get<string>( url, { observe: 'response' } ).pipe( map( res => {
-      //console.log('Get Item Description Response Body:', res.body);
-      return res.body;
-    } ) );
+    return this.httpClient.get<string>( url, { observe: 'response' } ).pipe(
+      retryWhen( this.retryStrategy( {
+        excludedStatusCodes: [ 400 ],
+        name: 'getItemDescription',
+      } ) ),
+      map( res => {
+        //console.log('Get Item Description Response Body:', res.body);
+        return res.body;
+      } ),
+    );
   }
 
   getItemPictures( id: string ): Observable<string[]> {
     let url = environment.baseUrl + 'v2/items/' + id + '/pictures';
-    return this.httpClient.get<string[]>( url, { observe: 'response' } ).pipe( map( res => {
-      return res.body;
-    } ) );
+    return this.httpClient.get<string[]>( url, { observe: 'response' } ).pipe(
+      retryWhen( this.retryStrategy( {
+        excludedStatusCodes: [ 400 ],
+        name: 'getItemPictures',
+      } ) ),
+      map( res => {
+        return res.body;
+      } )
+    );
   }
 
   getBaseCategories(): Observable<ICategory[]> {
     let url = environment.baseUrl + 'v2/categories';
     return this.httpClient.get<ICategory[]>( url, { observe: 'response' } ).pipe(
+      retryWhen( this.retryStrategy( {
+        excludedStatusCodes: [ 400 ],
+        name: 'getBaseCategories',
+      } ) ),
       map( res => {
         // console.log( 'Categories Response:', res );
         return res.body;
       } ),
-      retry( 2 )
     );
   }
 
   getCategoryConditions( categoryId: string ): Observable<ICondition[]> {
     let url = environment.baseUrl + 'v2/categories/' + categoryId + '/conditions';
     return this.httpClient.get<ICondition[]>( url, { observe: 'response' } ).pipe(
+      retryWhen( this.retryStrategy( {
+        excludedStatusCodes: [ 400 ],
+        name: 'getCategoryConditions',
+      } ) ),
       map( res => {
         // console.log( 'Category Condition response body:', res.body );
         return res.body;
       } ),
-      retry( 2 )
     );
   }
 
@@ -92,6 +155,10 @@ export class ApiService {
     }
     let url = environment.baseUrl + 'v2/categories/' + id;
     return this.httpClient.get<ICategory>( url, { observe: 'response' } ).pipe(
+      retryWhen( this.retryStrategy( {
+        excludedStatusCodes: [ 404 ],
+        name: 'isValidCategory',
+      } ) ),
       map( res => {
         return true;
       } ),
@@ -100,7 +167,7 @@ export class ApiService {
           observer.next( false );
           observer.complete();
         } );
-      } )
+      } ),
     );
   }
 
@@ -115,13 +182,17 @@ export class ApiService {
       observer.complete();
     } );
 
-    if ( conditionId == '0' || conditionId == 'Unspecified' ) return trueObs;
+    if ( conditionId === '0' || conditionId === 'Unspecified' ) return trueObs;
     else if ( categoryId === '0' ) {
-      if ( conditionId == 'New' || conditionId == 'Used' ) return trueObs;
+      if ( conditionId === 'New' || conditionId === 'Used' ) return trueObs;
       else return falseObs;
     } else {
       let url = environment.baseUrl + 'v2/categories/' + categoryId + '/conditions'
       return this.httpClient.get<ICondition[]>( url, { observe: 'response' } ).pipe(
+        retryWhen( this.retryStrategy( {
+          excludedStatusCodes: [ 400 ],
+          name: 'isValidCondition',
+        } ) ),
         map( res => {
           if ( res.body.length > 0 ) {
             let conditions = res.body.map( condition => {
@@ -129,9 +200,9 @@ export class ApiService {
             } );
             return conditions.includes( conditionId );
           } else {
-            return conditionId == 'Used';
+            return conditionId === 'Used';
           }
-        } )
+        } ),
       );
     }
   }
@@ -149,7 +220,7 @@ export interface ICondition {
 }
 
 export interface IQuery {
-  query?: string,
+  query: string,
   page?: number,
   sortBy?: string,
   listType?: string,
@@ -182,9 +253,7 @@ export interface IItem {
   listingInfo: {
     startTimeUtc: string,
     endTimeUtc: string,
-    endTimeLocal: string,
     timeRemaining: string,
-    timeTilEndDay: string,
   },
   listingType: 'Advertisement' | 'Auction' | 'AuctionWithBIN' | 'FixedPrice' | 'OtherType',
   bestOfferEnabled: boolean,
@@ -217,6 +286,7 @@ export interface ISearchResult {
   pagination: {
     page: number,
     totalPages: number,
+    totalEntries: number,
     entriesPerPage: number,
   },
   searchEbayUrl: string,

@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { TimeService } from '../common/time.service';
 
 @Component( {
   selector: 'time-remaining',
@@ -6,22 +7,17 @@ import { Component, Input, OnInit } from '@angular/core';
 } )
 export class TimeRemainingComponent implements OnInit {
 
+  constructor( private timeService: TimeService ) { }
+
   @Input()
-  listingInfo: {
-    startTimeUtc: string,
-    endTimeUtc: string,
-    endTimeLocal: string,
-    timeRemaining: string,
-    timeTilEndDay: string
-  }
+  endTimeUtc: string;
 
   private updateTimer;
-
   private timeRemaining: number;
+  private endTime;
+  private endTimeIso: number;
 
-  private timeTilEndDay: number;
-
-  private endDate;
+  private weekdays = [ 'Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat' ];
 
   timeRemainingDisplay: string;
 
@@ -29,98 +25,79 @@ export class TimeRemainingComponent implements OnInit {
 
   status: string = 'normal';
 
-  private parseDate( date: string ) {
-    let regex = /(?:(\w+)\s)(?:(\w+)\s)(?:(\w+)\s)(?:(\w+)\s)(?:([\d]+):)(?:([\d]+):)?(?:([\d]+))/
-    let matches = date.match( regex );
-    return {
-      weekday: matches[ 1 ],
-      month: matches[ 2 ],
-      day: +matches[ 3 ],
-      year: +matches[ 4 ],
-      hours: +matches[ 5 ],
-      minutes: +matches[ 6 ],
-      seconds: +matches[ 7 ]
-    }
-  }
-
-  private parseDuration( durationIso: string ) {
-    let regex = /P(?:([.,\d]+)D)?(?:T(?:([.,\d]+)H)?(?:([.,\d]+)M)?(?:([.,\d]+)S)?)?/
-    let matches = durationIso.match( regex );
-
-    let days = matches[ 1 ] === undefined ? 0 : +matches[ 1 ];
-    let hours = matches[ 2 ] === undefined ? 0 : +matches[ 2 ];
-    let minutes = matches[ 3 ] === undefined ? 0 : +matches[ 3 ];
-    let seconds = matches[ 4 ] === undefined ? 0 : +matches[ 4 ];
-
-    return seconds + minutes * 60 + hours * 60 * 60 + days * 60 * 60 * 24;
-  }
-
   private update() {
-    this.timeRemaining -= 1;
-    this.timeTilEndDay -= 1;
+    if ( this.timeService.ready() ) {
+      let nowIso = this.timeService.now();
+      this.timeRemaining = this.endTimeIso - nowIso;
 
-    let days = Math.floor( this.timeRemaining / ( 60 * 60 * 24 ) );
-    let hours = Math.floor( ( this.timeRemaining % ( 60 * 60 * 24 ) ) / ( 60 * 60 ) );
-    let minutes = Math.floor( ( this.timeRemaining % ( 60 * 60 ) ) / ( 60 ) );
-    let seconds = Math.floor( ( this.timeRemaining % ( 60 ) ) );
+      let days = Math.floor( this.timeRemaining / ( 1000 * 60 * 60 * 24 ) );
+      let hours = Math.floor( ( this.timeRemaining % ( 1000 * 60 * 60 * 24 ) ) / ( 1000 * 60 * 60 ) );
+      let minutes = Math.floor( ( this.timeRemaining % ( 1000 * 60 * 60 ) ) / ( 1000 * 60 ) );
+      let seconds = Math.floor( ( this.timeRemaining % ( 1000 * 60 ) / 1000 ) );
 
-    let timeRemainingDisplay = '';
+      let timeRemainingDisplay = '';
 
-    if ( days > 0 ) {
-      this.status = 'normal';
-      timeRemainingDisplay += days + ( days === 1 ? ' day ' : ' days ' );
-      if ( hours > 0 ) {
+      if ( days > 0 ) {
+        this.status = 'normal';
+        timeRemainingDisplay += days + ( days === 1 ? ' day ' : ' days ' );
+        if ( hours > 0 ) {
+          timeRemainingDisplay += hours + ( hours === 1 ? ' hour ' : ' hours ' );
+        }
+        timeRemainingDisplay += 'left';
+      } else if ( hours > 0 ) {
+        this.status = 'normal';
         timeRemainingDisplay += hours + ( hours === 1 ? ' hour ' : ' hours ' );
+        if ( minutes > 0 ) {
+          timeRemainingDisplay += minutes + ( minutes === 1 ? ' minute ' : ' minutes ' );
+        }
+        timeRemainingDisplay += 'left';
+      } else if ( minutes > 0 ) {
+        this.status = 'urgent';
+        timeRemainingDisplay += minutes + ( minutes === 1 ? ' minute ' : ' minutes left' );
+      } else if ( seconds > 0 ) {
+        this.status = 'urgent';
+        timeRemainingDisplay += seconds + ( seconds === 1 ? ' second ' : ' seconds left' );
+      } else {
+        this.status = 'ended';
+        timeRemainingDisplay = 'Ended'
       }
-      timeRemainingDisplay += 'left';
-    } else if ( hours > 0 ) {
-      this.status = 'normal';
-      timeRemainingDisplay += hours + ( hours === 1 ? ' hour ' : ' hours ' );
-      if ( minutes > 0 ) {
-        timeRemainingDisplay += minutes + ( minutes === 1 ? ' minute ' : ' minutes ' );
+
+      if ( this.endTime === undefined ) {
+        this.endTime = this.timeService.toLocal( this.endTimeIso );
       }
-      timeRemainingDisplay += 'left';
-    } else if ( minutes > 0 ) {
-      this.status = 'urgent';
-      timeRemainingDisplay += minutes + ( minutes === 1 ? ' minute ' : ' minutes left' );
-    } else if ( seconds > 0 ) {
-      this.status = 'urgent';
-      timeRemainingDisplay += seconds + ( seconds === 1 ? ' second ' : ' seconds left' );
-    } else {
-      this.status = 'ended';
-      timeRemainingDisplay = 'Ended'
+
+      let now = this.timeService.toLocal( nowIso );
+      let endTimeDisplay = '(';
+
+      if ( now.date === this.endTime.date
+        && now.month === this.endTime.month
+        && now.year === this.endTime.year
+      ) {
+        endTimeDisplay += 'Today'
+      } else {
+        endTimeDisplay += this.weekdays[ this.endTime.weekday ];
+      }
+
+      let hour = this.endTime.hours;
+      let minute = String( this.endTime.minutes ).padStart( 2, '0' );
+      if ( hour === 0 ) {
+        endTimeDisplay += ' 12:' + minute + ' AM)';
+      } else if ( hour <= 11 ) {
+        endTimeDisplay += ' ' + hour + ':' + minute + ' AM)';
+      } else if ( hour === 12 ) {
+        endTimeDisplay += ' 12:' + minute + ' PM)';
+      } else {
+        endTimeDisplay += ' ' + ( hour - 12 ) + ':' + minute + ' PM)';
+      }
+
+      this.timeRemainingDisplay = timeRemainingDisplay;
+      this.endTimeDisplay = endTimeDisplay;
     }
-
-    let endTimeDisplay = '(';
-
-    if ( this.timeTilEndDay <= 0 ) {
-      endTimeDisplay += 'Today'
-    } else {
-      endTimeDisplay += this.endDate.weekday;
-    }
-
-    let hour = this.endDate.hours;
-    let minute = String( this.endDate.minutes ).padStart( 2, '0' );
-    if ( hour === 0 ) {
-      endTimeDisplay += ' 12:' + minute + ' AM)';
-    } else if ( hour <= 11 ) {
-      endTimeDisplay += ' ' + hour + ':' + minute + ' AM)';
-    } else if ( hour === 12 ) {
-      endTimeDisplay += ' 12:' + minute + ' PM)';
-    } else {
-      endTimeDisplay += ' ' + ( hour - 12 ) + ':' + minute + ' PM)';
-    }
-
-    this.timeRemainingDisplay = timeRemainingDisplay;
-    this.endTimeDisplay = endTimeDisplay;
-
   }
 
   private reset() {
     clearInterval( this.updateTimer );
-    this.timeRemaining = this.parseDuration( this.listingInfo.timeRemaining );
-    this.timeTilEndDay = this.parseDuration( this.listingInfo.timeTilEndDay );
-    this.endDate = this.parseDate( this.listingInfo.endTimeLocal );
+    this.endTimeIso = new Date( this.endTimeUtc ).getTime()
 
     this.update();
 
