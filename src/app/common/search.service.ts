@@ -25,11 +25,25 @@ export class SearchService {
   ] );
 
   navigate( query: IQuery, currentState: IQuery ): void {
+    console.log( query );
+    console.log( currentState );
+    Object.keys( query ).forEach( key => {
+      if ( query[ key ] === undefined || query[ key ] === null || query[ key ] === '' ) {
+        delete query[ key ];
+      }
+    } );
+    Object.keys( currentState ).forEach( key => {
+      if ( currentState[ key ] === undefined || currentState[ key ] === null || currentState[ key ] === '' ) {
+        delete currentState[ key ];
+      }
+    } );
+    console.log( query );
+    console.log( currentState );
     let params: IQuery;
     if ( query.query.trim() === '' ) {
       this.router.navigateByUrl( '' );
     } else {
-      if ( query.hasOwnProperty( 'page' ) && query.page !== currentState.page ) {
+      if ( query.page !== undefined && query.page !== currentState.page ) {
         params = currentState;
         params.page = query.page;
       } else {
@@ -43,17 +57,19 @@ export class SearchService {
         delete params.page;
       }
       params.query = params.query.trim();
-      if ( params.hasOwnProperty( 'page' ) && params.page === 1 ) delete params.page;
-      if ( params.hasOwnProperty( 'sortBy' ) && params.sortBy === '0' ) delete params.sortBy;
-      if ( params.hasOwnProperty( 'listType' ) && params.listType === '0' ) delete params.listType;
-      if ( params.hasOwnProperty( 'condition' ) && params.condition !== currentState.condition ) {
+      if ( params.page !== undefined && params.page === 1 ) delete params.page;
+      if ( params.sortBy !== undefined && params.sortBy === '0' ) delete params.sortBy;
+      if ( params.listType !== undefined && params.listType === '0' ) delete params.listType;
+      if ( params.condition !== undefined && params.condition !== currentState.condition ) {
         params.category = currentState.category;
       }
-      if ( params.hasOwnProperty( 'category' ) && params.category === '0' ) delete params.category;
-      if ( params.hasOwnProperty( 'category' ) && params.category !== currentState.category ) {
+      if ( params.category !== undefined && params.category === '0' ) delete params.category;
+      if ( params.category !== undefined && params.category !== currentState.category ) {
         params.condition = '0';
       }
-      if ( params.hasOwnProperty( 'condition' ) && params.condition === '0' ) delete params.condition;
+      if ( params.condition !== undefined && params.condition === '0' ) delete params.condition;
+
+      // console.log( params )
       this.router.navigate( [ 'search', params ] );
     }
   }
@@ -121,68 +137,4 @@ export class SearchService {
     return this.apiService.searchItems( query );
   }
 
-  validateQuery( dirty: IQuery ): Observable<IQuery> {
-
-    let clean: IQuery = { query: dirty.query.trim() };
-
-    if ( dirty.hasOwnProperty( 'page' ) && dirty.page <= 100 && dirty.page >= 1 ) {
-      clean.page = dirty.page;
-    }
-
-    if ( dirty.hasOwnProperty( 'sortBy' ) && this.sortings.has( dirty.sortBy ) ) {
-      clean.sortBy = dirty.sortBy;
-    }
-
-
-
-    // if ( params.has( 'sortBy' ) && this.sortings.has( params.get( 'sortBy' ) ) ) {
-    //   query.sortBy = params.get( 'sortBy' );
-    // }
-
-    // if ( params.has( 'listType' ) && this.types.has( params.get( 'listType' ) ) ) {
-    //   query.listType = params.get( 'listType' );
-    // }
-
-    // Asynchronous validations
-    // let observables: any = {};
-
-    // if ( params.has( 'category' ) && params.get( 'category' ) !== '0' ) {
-    //   observables.category = this.apiService.isValidCategory( params.get( 'category' ) );
-    // }
-
-    // if ( params.has( 'condition' ) && params.get( 'condition' ) !== '0' ) {
-    //   observables.condition = this.apiService.isValidCondition( params.get( 'category' ) || '0', params.get( 'condition' ) )
-    // }
-
-    // forkJoin( observables ).pipe<any>( defaultIfEmpty( {} ) ).subscribe( resDict => {
-    //   if ( resDict.category ) query.category = params.get( 'category' );
-    //   if ( resDict.condition ) query.condition = params.get( 'condition' );
-    // })
-    // }
-
-    return;
-  }
 }
-
-// export interface ISearchState {
-//   sortings: Map<string, string>;
-//   types: Map<string, string>;
-//   conditions: Map<string, string>;
-//   categories: Map<string, string>;
-
-//   currentState: IQuery;
-
-// }
-
-// export class SearchState implements ISearchState {
-
-//   conditions = new Map( [
-//     [ 'New', 'New' ],
-//     [ 'Used', 'Used' ],
-//     [ 'Unspecified', 'Unspecified' ]
-//   ] );
-//   categories: Map<string, string>;
-
-//   currentState: IQuery;
-
-// }

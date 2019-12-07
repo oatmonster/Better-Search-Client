@@ -9,33 +9,12 @@ import { environment } from '../../environments/environment';
 export class ApiService {
   constructor( private httpClient: HttpClient ) { };
 
-  private retryStrategy = ( {
-    maxRetryAttempts = 3,
-    excludedStatusCodes = [],
-  }: {
-      maxRetryAttempts?: number,
-      excludedStatusCodes?: number[],
-      name?: string,
-    } = {} ) => ( attempts: Observable<any> ) => {
-      return attempts.pipe(
-        mergeMap( ( err, i ) => {
-          const retryAttempt = i + 1;
-          if ( retryAttempt > maxRetryAttempts || excludedStatusCodes.find( e => e === err.status ) ) {
-            return throwError( err );
-          }
-          if ( name ) {
-            console.error( 'Retrying ' + name + ' attempt ' + i + '...' );
-          } else {
-            console.error( 'Retrying attempt ' + i + '...' );
-          }
-          return timer( 100 );
-        } ),
-      );
-    }
-
   getTime(): Observable<any> {
     return this.httpClient.get( environment.baseUrl + 'v2/time' ).pipe(
-      retryWhen( this.retryStrategy( { name: 'getTime' } ) ),
+      retryWhen( this.retryStrategy( {
+        maxRetryAttempts: 5,
+        name: 'getTime'
+      } ) ),
     );
   }
 
@@ -60,28 +39,25 @@ export class ApiService {
     }
 
     return this.httpClient.get<ISearchResult>(
-      environment.baseUrl + 'v2/search', { observe: 'response', params: params }
-    ).pipe(
-      retryWhen( this.retryStrategy( {
-        excludedStatusCodes: [ 400 ],
-        name: 'search',
-      } ) ),
-      map( res => {
-        // TODO: Check response status code
-        // console.log( 'Search Items Response Body:', res.body );
-        return res.body;
-      } ),
-      catchError( err => {
-        return throwError( err );
-      } ),
-    );
+      environment.baseUrl + 'v2/search', { observe: 'response', params: params } ).pipe(
+        retryWhen( this.retryStrategy( {
+          name: 'search',
+        } ) ),
+        map( res => {
+          // TODO: Check response status code
+          // console.log( 'Search Items Response Body:', res.body );
+          return res.body;
+        } ),
+        catchError( err => {
+          return throwError( err );
+        } ),
+      );
   }
 
   getItem( id: string ): Observable<IItem> {
     let url = environment.baseUrl + 'v2/items/' + id;
     return this.httpClient.get<IItem>( url, { observe: 'response' } ).pipe(
       retryWhen( this.retryStrategy( {
-        excludedStatusCodes: [ 400 ],
         name: 'getItem',
       } ) ),
       map( res => {
@@ -95,7 +71,6 @@ export class ApiService {
     let url = environment.baseUrl + 'v2/items/' + id + '/description';
     return this.httpClient.get<string>( url, { observe: 'response' } ).pipe(
       retryWhen( this.retryStrategy( {
-        excludedStatusCodes: [ 400 ],
         name: 'getItemDescription',
       } ) ),
       map( res => {
@@ -109,7 +84,6 @@ export class ApiService {
     let url = environment.baseUrl + 'v2/items/' + id + '/pictures';
     return this.httpClient.get<string[]>( url, { observe: 'response' } ).pipe(
       retryWhen( this.retryStrategy( {
-        excludedStatusCodes: [ 400 ],
         name: 'getItemPictures',
       } ) ),
       map( res => {
@@ -122,7 +96,6 @@ export class ApiService {
     let url = environment.baseUrl + 'v2/categories';
     return this.httpClient.get<ICategory[]>( url, { observe: 'response' } ).pipe(
       retryWhen( this.retryStrategy( {
-        excludedStatusCodes: [ 400 ],
         name: 'getBaseCategories',
       } ) ),
       map( res => {
@@ -136,7 +109,6 @@ export class ApiService {
     let url = environment.baseUrl + 'v2/categories/' + categoryId + '/conditions';
     return this.httpClient.get<ICondition[]>( url, { observe: 'response' } ).pipe(
       retryWhen( this.retryStrategy( {
-        excludedStatusCodes: [ 400 ],
         name: 'getCategoryConditions',
       } ) ),
       map( res => {
@@ -156,7 +128,6 @@ export class ApiService {
     let url = environment.baseUrl + 'v2/categories/' + id;
     return this.httpClient.get<ICategory>( url, { observe: 'response' } ).pipe(
       retryWhen( this.retryStrategy( {
-        excludedStatusCodes: [ 404 ],
         name: 'isValidCategory',
       } ) ),
       map( res => {
@@ -190,7 +161,6 @@ export class ApiService {
       let url = environment.baseUrl + 'v2/categories/' + categoryId + '/conditions'
       return this.httpClient.get<ICondition[]>( url, { observe: 'response' } ).pipe(
         retryWhen( this.retryStrategy( {
-          excludedStatusCodes: [ 400 ],
           name: 'isValidCondition',
         } ) ),
         map( res => {
@@ -205,6 +175,32 @@ export class ApiService {
         } ),
       );
     }
+  }
+
+  private retryStrategy = ( {
+    maxRetryAttempts = 3,
+    excludedStatusCodes = [ 400, 401, 403, 404 ],
+    name
+  }: {
+      maxRetryAttempts?: number,
+      excludedStatusCodes?: number[],
+      name?: string,
+    } = {}
+  ) => ( attempts: Observable<any> ) => {
+    return attempts.pipe(
+      mergeMap( ( err, i ) => {
+        const retryAttempt = i + 1;
+        if ( retryAttempt > maxRetryAttempts || excludedStatusCodes.includes( err.status ) ) {
+          return throwError( err );
+        }
+        if ( name ) {
+          console.error( 'Retrying ' + name + ' attempt ' + retryAttempt + '...' );
+        } else {
+          console.error( 'Retrying attempt ' + retryAttempt + '...' );
+        }
+        return timer( 100 );
+      } ),
+    );
   }
 }
 
