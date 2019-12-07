@@ -15,7 +15,7 @@
           <button type="submit" class="btn btn-primary">Search</button>
         </div>
       </div>
-      <div class="form-row form-group">
+      <div class="form-row form-group" *ngIf="validSearch">
         <!-- Listing Type -->
         <div class="col">
           <div class="btn-group">
@@ -28,7 +28,7 @@
           <dropdown-input formControlName="sortBy" [itemMap]="sortings" [submit]="true" [defaultText]="'Best Match'"></dropdown-input>
         </div>
       </div>
-      <div class="form-row form-group">
+      <div class="form-row form-group" *ngIf="validSearch">
         <!-- Item Condition -->
         <div class="col">
           <dropdown-input formControlName="condition" [itemMap]="conditions" [submit]="true" [defaultText]="'Any Condition'"></dropdown-input>
@@ -43,6 +43,10 @@
         </li>
       </div>
     </ul>
+    <!-- Invalid search -->
+    <div *ngIf="!validSearch">
+      Invalid Search
+    </div>
     <!-- Pagination -->
     <br>
     <div *ngIf="results?.pagination.totalEntries && results?.pagination.totalEntries === 0">

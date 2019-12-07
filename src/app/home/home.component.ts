@@ -15,7 +15,7 @@ export class HomeComponent {
   constructor( private searchService: SearchService ) { }
 
   searchForm = new FormGroup( {
-    query: new FormControl( '' ),
+    query: new FormControl(),
   } );
 
   submit() {
