@@ -1,4 +1,18 @@
 <div class="container">
+  <form [formGroup]="searchForm" (ngSubmit)="submit()">
+    <div class="form-row form-group">
+      <div class="col">
+        <div class="input-group">
+          <input formControlName="query" type="text" class="form-control border-right-0" placeholder="Search">
+          <dropdown-input *ngIf="categories" formControlName="category" [itemMap]="categories" [inputAppend]="true"
+            [defaultText]="'All Categories'"></dropdown-input>
+        </div>
+      </div>
+      <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Search</button>
+      </div>
+    </div>
+  </form>
   <div class="row">
     <div class="col">
       <!-- Gallery Carousel -->

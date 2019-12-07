@@ -15,7 +15,15 @@ import { SearchService } from '../common/search.service';
 } )
 export class SearchComponent implements OnInit {
 
+  constructor(
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private searchService: SearchService
+  ) { }
+
   results: ISearchResult;
+  currentState: IQuery;
+
   sortings: Map<string, string> = new Map();
   types: Map<string, string> = new Map();
   conditions: Map<string, string> = new Map();
@@ -27,16 +35,8 @@ export class SearchComponent implements OnInit {
     sortBy: new FormControl( '' ),
     listType: new FormControl( '' ),
     category: new FormControl( '' ),
-    condition: new FormControl( '' )
+    condition: new FormControl( '' ),
   } );
-
-  currentState: IQuery;
-
-  constructor(
-    private router: Router,
-    private activatedRoute: ActivatedRoute,
-    private searchService: SearchService
-  ) { }
 
   submit() {
     this.searchService.navigate( this.searchForm.value, this.currentState );
