@@ -107,7 +107,14 @@ export class SearchComponent implements OnInit {
             err => {
               console.error( 'Search failed' );
               this.currentState = undefined;
-              this.searchForm.reset();
+              this.searchForm.setValue( {
+                query: '',
+                page: 1,
+                sortBy: '0',
+                listType: '0',
+                category: '0',
+                condition: '0'
+              } );
               this.validSearch = false;
             }
           );
