@@ -25,29 +25,15 @@ export class SearchService {
   ] );
 
   navigate( query: IQuery, currentState: IQuery ): void {
-    console.log( query );
-    console.log( currentState );
-    Object.keys( query ).forEach( key => {
-      if ( query[ key ] === undefined || query[ key ] === null || query[ key ] === '' ) {
-        delete query[ key ];
-      }
-    } );
-    Object.keys( currentState ).forEach( key => {
-      if ( currentState[ key ] === undefined || currentState[ key ] === null || currentState[ key ] === '' ) {
-        delete currentState[ key ];
-      }
-    } );
-    console.log( query );
-    console.log( currentState );
-    let params: IQuery;
     if ( query.query.trim() === '' ) {
       this.router.navigateByUrl( '' );
     } else {
+      let params: IQuery;
       if ( query.page !== undefined && query.page !== currentState.page ) {
-        params = currentState;
+        params = Object.assign( {}, currentState );
         params.page = query.page;
       } else {
-        params = currentState;
+        params = Object.assign( {}, currentState )
         Object.keys( query ).forEach( key => {
           params[ key ] = query[ key ];
         } );
@@ -65,9 +51,15 @@ export class SearchService {
       }
       if ( params.category !== undefined && params.category === '0' ) delete params.category;
       if ( params.category !== undefined && params.category !== currentState.category ) {
-        params.condition = '0';
+        delete params.condition;
       }
       if ( params.condition !== undefined && params.condition === '0' ) delete params.condition;
+
+      Object.keys( params ).forEach( key => {
+        if ( params[ key ] === undefined || params[ key ] === null || params[ key ] === '' ) {
+          delete params[ key ];
+        }
+      } );
 
       // console.log( params )
       this.router.navigate( [ 'search', params ] );
