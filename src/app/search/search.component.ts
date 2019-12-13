@@ -23,6 +23,7 @@ export class SearchComponent implements OnInit {
 
   results: ISearchResult;
   currentState: IQuery;
+  validSearch: boolean = true;
 
   sortings: Map<string, string> = new Map();
   types: Map<string, string> = new Map();
@@ -30,16 +31,16 @@ export class SearchComponent implements OnInit {
   categories: Map<string, string> = new Map();
 
   searchForm = new FormGroup( {
-    query: new FormControl( '' ),
-    page: new FormControl( '' ),
-    sortBy: new FormControl( '' ),
-    listType: new FormControl( '' ),
-    category: new FormControl( '' ),
-    condition: new FormControl( '' ),
+    query: new FormControl(),
+    page: new FormControl(),
+    sortBy: new FormControl(),
+    listType: new FormControl(),
+    category: new FormControl(),
+    condition: new FormControl(),
   } );
 
   submit() {
-    this.searchService.navigate( this.searchForm.value, this.currentState );
+    this.searchService.navigate( this.searchForm.value, this.currentState || this.searchForm.value );
   }
 
   changeListType( newListType: string ) {
@@ -78,6 +79,7 @@ export class SearchComponent implements OnInit {
 
           this.searchService.search( query ).subscribe(
             res => {
+              this.validSearch = true;
               window.scroll( 0, 0 );
               this.currentState = {
                 query: query.query,
@@ -98,12 +100,22 @@ export class SearchComponent implements OnInit {
                 },
                 err => {
                   console.error( 'Get conditions error' );
+                  throw new Error( 'Failed to get conditions' )
                 }
               );
             },
             err => {
-              console.error( 'Something went wrong' );
-              console.error( err );
+              console.error( 'Search failed' );
+              this.currentState = undefined;
+              this.searchForm.setValue( {
+                query: '',
+                page: 1,
+                sortBy: '0',
+                listType: '0',
+                category: '0',
+                condition: '0'
+              } );
+              this.validSearch = false;
             }
           );
         }
