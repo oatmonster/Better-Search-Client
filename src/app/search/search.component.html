@@ -1,48 +1,69 @@
-<div class="container">
-  <!-- Search Bar -->
+<div class="container-fluid">
+
   <form [formGroup]="searchForm" (ngSubmit)="submit()">
-    <div>
-      <!-- <div class="sticky-top bg-white"> -->
-      <div class="form-row form-group">
-        <div class="col">
-          <div class="input-group">
-            <input formControlName="query" type="text" class="form-control border-right-0" placeholder="Search">
-            <dropdown-input *ngIf="categories" formControlName="category" [itemMap]="categories" [inputAppend]="true"
-              [defaultText]="'All Categories'"></dropdown-input>
-          </div>
-        </div>
-        <div class="col-auto">
-          <button type="submit" class="btn btn-primary">Search</button>
+
+    <div class="form-row form-group">
+      <!-- Search Bar -->
+      <div class="col">
+        <div class="input-group">
+          <input formControlName="query" type="text" class="form-control border-right-0" placeholder="Search">
+          <dropdown-input *ngIf="categories" formControlName="category" [itemMap]="categories" [inputAppend]="true"
+            [defaultText]="'All Categories'"></dropdown-input>
         </div>
       </div>
-      <div class="form-row form-group" *ngIf="validSearch">
-        <!-- Listing Type -->
-        <div class="col">
-          <div class="btn-group">
-            <button class="btn btn-light" type="button" *ngFor="let listType of types | keyvalue" (click)="changeListType( listType.key )"
-              [ngClass]="{ active: searchForm.value.listType === listType.key }">{{ listType.value }}</button>
-          </div>
-        </div>
-        <!-- Sort Order -->
-        <div class="col text-right">
-          <dropdown-input formControlName="sortBy" [itemMap]="sortings" [submit]="true" [defaultText]="'Best Match'"></dropdown-input>
-        </div>
-      </div>
-      <div class="form-row form-group" *ngIf="validSearch">
-        <!-- Item Condition -->
-        <div class="col">
-          <dropdown-input formControlName="condition" [itemMap]="conditions" [submit]="true" [defaultText]="'Any Condition'"></dropdown-input>
-        </div>
+      <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Search</button>
       </div>
     </div>
-    <!-- Item List -->
-    <ul class="list-group">
-      <div [@staggerList]="currentState">
-        <li class="list-group-item border-left-0 border-right-0" *ngFor="let item of results?.searchResult.items; index as i">
-          <item-thumbnail [item]="item" [index]="i"></item-thumbnail>
-        </li>
+    <div class="form-row form-group" *ngIf="validSearch">
+      <!-- Listing Type -->
+      <div class="col">
+        <div class="btn-group">
+          <button class="btn btn-light" type="button" *ngFor="let listType of types | keyvalue" (click)="changeListType( listType.key )"
+            [ngClass]="{ active: searchForm.value.listType === listType.key }">{{ listType.value }}</button>
+        </div>
       </div>
-    </ul>
+      <!-- Sort Order -->
+      <div class="col text-right">
+        <dropdown-input formControlName="sortBy" [itemMap]="sortings" [submit]="true" [defaultText]="'Best Match'"></dropdown-input>
+      </div>
+    </div>
+    <div class="form-row form-group" *ngIf="validSearch">
+      <!-- Item Condition -->
+      <div class="col">
+        <dropdown-input formControlName="condition" [itemMap]="conditions" [submit]="true" [defaultText]="'Any Condition'"></dropdown-input>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-2">
+        <!-- Categories -->
+        <div *ngIf="results?.categoryHistogram">
+          <div *ngFor="let category of results.categoryHistogram">
+            {{category.categoryName}}
+            <ul>
+              <li *ngFor="let child of [].concat(category.childCategoryHistogram)">
+                {{child.categoryName}}
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Aspect Filters -->
+
+      </div>
+      <div class="col-8">
+        <!-- Item List -->
+        <ul class="list-group">
+          <div [@staggerList]="currentState">
+            <li class="list-group-item border-left-0 border-right-0" *ngFor="let item of results?.searchResult.items; index as i">
+              <item-thumbnail [item]="item" [index]="i"></item-thumbnail>
+            </li>
+          </div>
+        </ul>
+      </div>
+    </div>
+
     <!-- Invalid search -->
     <div *ngIf="!validSearch">
       Invalid Search

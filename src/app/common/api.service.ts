@@ -286,4 +286,7 @@ export interface ISearchResult {
     entriesPerPage: number,
   },
   searchEbayUrl: string,
+  aspectHistogram?: any,
+  conditionHistogram?: any,
+  categoryHistogram?: any,
 }
