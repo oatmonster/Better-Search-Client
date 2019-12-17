@@ -40,10 +40,10 @@
         <!-- Categories -->
         <div *ngIf="results?.categoryHistogram">
           <div *ngFor="let category of results.categoryHistogram">
-            {{category.categoryName}}
+            {{category.category.name}}
             <ul>
-              <li *ngFor="let child of [].concat(category.childCategoryHistogram)">
-                {{child.categoryName}}
+              <li *ngFor="let child of category.childCategoryHistogram">
+                {{child.category.name}}
               </li>
             </ul>
           </div>

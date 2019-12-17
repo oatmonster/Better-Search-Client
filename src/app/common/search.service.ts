@@ -80,7 +80,7 @@ export class SearchService {
         let categories = new Map<string, string>();
         categories.set( '0', 'All Categories' );
         res.forEach( category => {
-          categories.set( category.categoryId, category.categoryName );
+          categories.set( category.id, category.name );
         } );
         return categories;
       } ),
@@ -108,7 +108,7 @@ export class SearchService {
           let conditions = new Map()
           if ( res.length > 0 ) {
             res.forEach( ( condition ) => {
-              conditions.set( condition.conditionId, condition.conditionName );
+              conditions.set( condition.id, condition.name );
             } );
             conditions.set( 'Unspecified', 'Unspecified' );
           } else {

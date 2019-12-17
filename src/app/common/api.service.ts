@@ -166,7 +166,7 @@ export class ApiService {
         map( res => {
           if ( res.body.length > 0 ) {
             let conditions = res.body.map( condition => {
-              return condition.conditionId;
+              return condition.id;
             } );
             return conditions.includes( conditionId );
           } else {
@@ -205,14 +205,14 @@ export class ApiService {
 }
 
 export interface ICategory {
-  categoryId: string,
-  categoryName: string,
+  id: string,
+  name: string,
   parentId?: string,
 }
 
 export interface ICondition {
-  conditionId: string,
-  conditionName: string,
+  id: string,
+  name: string,
 }
 
 export interface IQuery {
@@ -238,14 +238,8 @@ export interface IItem {
   thumbnailUrl: string,
   galleryUrls?: string[],
   country: string,
-  condition?: {
-    conditionId: string,
-    conditionName: string,
-  },
-  category: {
-    categoryId: string,
-    categoryName: string,
-  },
+  condition?: ICondition,
+  category?: ICategory,
   listingInfo: {
     startTimeUtc: string,
     endTimeUtc: string,
@@ -286,7 +280,19 @@ export interface ISearchResult {
     entriesPerPage: number,
   },
   searchEbayUrl: string,
-  aspectHistogram?: any,
-  conditionHistogram?: any,
-  categoryHistogram?: any,
+  aspectHistogram: {
+    aspect: string,
+    values: {
+      name: string,
+      count: number,
+    }[],
+  }[],
+  categoryHistogram: {
+    category: ICategory,
+    count: number,
+    childCategoryHistogram: {
+      category: ICategory,
+      count: number,
+    }[],
+  }[],
 }
