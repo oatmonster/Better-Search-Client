@@ -39,7 +39,8 @@ export class SearchService {
         } );
       }
       // Clean url
-      if ( query.query !== currentState.query ) {
+      console.log( query.query )
+      if ( query.page === currentState.page ) {
         delete params.page;
       }
       params.query = params.query.trim();
