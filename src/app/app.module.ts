@@ -18,8 +18,9 @@ import { ItemDetailComponent } from './item-detail/item-detail.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { LoadingComponent } from './loading/loading.component';
 import { HomeComponent } from './home/home.component';
-import { DropdownInputComponent } from './common/dropdown-input/dropdown-input.component';
-import { PageInputComponent } from './common/page-input/page-input.component';
+import { DropdownInputComponent } from './form-controls/dropdown-input/dropdown-input.component';
+import { PageInputComponent } from './form-controls/page-input/page-input.component';
+import { CategoryInputComponent } from './form-controls/category-input/category-input.component';
 import { SquareCarouselComponent } from './common/square-carousel/square-carousel.component';
 import { TimeRemainingComponent } from './time-remaining/time-remaining.component';
 
@@ -46,6 +47,7 @@ import { appRoutes } from './routes';
     HomeComponent,
     DropdownInputComponent,
     PageInputComponent,
+    CategoryInputComponent,
     SquareCarouselComponent,
     TimeRemainingComponent,
   ],

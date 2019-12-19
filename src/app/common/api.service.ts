@@ -88,12 +88,24 @@ export class ApiService {
       } ) ),
       map( res => {
         return res.body;
-      } )
+      } ),
+    );
+  }
+
+  getCategoryParents( id: string ): Observable<ICategory[]> {
+    let url = environment.baseUrl + 'v2/categories/' + id + '/parents';
+    return this.httpClient.get<ICategory[]>( url, { observe: 'response' } ).pipe(
+      retryWhen( this.retryStrategy( {
+        name: 'getCategoryParents',
+      } ) ),
+      map( res => {
+        return res.body;
+      } ),
     );
   }
 
   getBaseCategories(): Observable<ICategory[]> {
-    let url = environment.baseUrl + 'v2/categories';
+    let url = environment.baseUrl + 'v2/categories/0/children';
     return this.httpClient.get<ICategory[]>( url, { observe: 'response' } ).pipe(
       retryWhen( this.retryStrategy( {
         name: 'getBaseCategories',
@@ -116,65 +128,6 @@ export class ApiService {
         return res.body;
       } ),
     );
-  }
-
-  isValidCategory( id: string ): Observable<any> {
-    if ( id === '0' ) {
-      return new Observable<boolean>( observer => {
-        observer.next( true );
-        observer.complete();
-      } );
-    }
-    let url = environment.baseUrl + 'v2/categories/' + id;
-    return this.httpClient.get<ICategory>( url, { observe: 'response' } ).pipe(
-      retryWhen( this.retryStrategy( {
-        name: 'isValidCategory',
-      } ) ),
-      map( res => {
-        return true;
-      } ),
-      catchError( err => {
-        return new Observable<boolean>( observer => {
-          observer.next( false );
-          observer.complete();
-        } );
-      } ),
-    );
-  }
-
-  isValidCondition( categoryId: string, conditionId: string ): Observable<boolean> {
-    const trueObs = new Observable<boolean>( observer => {
-      observer.next( true )
-      observer.complete();
-    } );
-
-    const falseObs = new Observable<boolean>( observer => {
-      observer.next( false )
-      observer.complete();
-    } );
-
-    if ( conditionId === '0' || conditionId === 'Unspecified' ) return trueObs;
-    else if ( categoryId === '0' ) {
-      if ( conditionId === 'New' || conditionId === 'Used' ) return trueObs;
-      else return falseObs;
-    } else {
-      let url = environment.baseUrl + 'v2/categories/' + categoryId + '/conditions'
-      return this.httpClient.get<ICondition[]>( url, { observe: 'response' } ).pipe(
-        retryWhen( this.retryStrategy( {
-          name: 'isValidCondition',
-        } ) ),
-        map( res => {
-          if ( res.body.length > 0 ) {
-            let conditions = res.body.map( condition => {
-              return condition.id;
-            } );
-            return conditions.includes( conditionId );
-          } else {
-            return conditionId === 'Used';
-          }
-        } ),
-      );
-    }
   }
 
   private retryStrategy = ( {
@@ -287,7 +240,7 @@ export interface ISearchResult {
       count: number,
     }[],
   }[],
-  categoryHistogram: {
+  categoryHistogram?: {
     category: ICategory,
     count: number,
     childCategoryHistogram: {

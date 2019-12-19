@@ -38,16 +38,7 @@
     <div class="row">
       <div class="col-2">
         <!-- Categories -->
-        <div *ngIf="results?.categoryHistogram">
-          <div *ngFor="let category of results.categoryHistogram">
-            {{category.category.name}}
-            <ul>
-              <li *ngFor="let child of category.childCategoryHistogram">
-                {{child.category.name}}
-              </li>
-            </ul>
-          </div>
-        </div>
+        <category-input formControlName="category" [histogram]="results?.categoryHistogram" [currentCategoryId]="currentState?.category"></category-input>
 
         <!-- Aspect Filters -->
 

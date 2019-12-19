@@ -56,7 +56,6 @@ export class DropdownInputComponent implements ControlValueAccessor, OnInit, OnC
 
   selectItem( item ): void {
     this.value = item.key;
-    this.onChange_( this.value_ );
   }
 
   selected(): string {
