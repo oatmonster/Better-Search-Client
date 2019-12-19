@@ -25,8 +25,7 @@ export class PageInputComponent implements ControlValueAccessor, OnInit, OnChang
 
   private onChange_ = ( _: any ) => { }
   private value_: number;
-
-  pages: number[] = [];
+  private pages: number[] = [];
 
   get value() {
     return this.value_;

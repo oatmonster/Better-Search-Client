@@ -30,9 +30,9 @@ export class DropdownInputComponent implements ControlValueAccessor, OnInit, OnC
   @Input()
   inputAppend: boolean = false;
 
-  private items: Map<string, Array<string>> = new Map();
   private onChange_ = ( _: any ) => { }
   private value_;
+  private items: Map<string, Array<string>> = new Map();
 
   get value() {
     return this.value_;
