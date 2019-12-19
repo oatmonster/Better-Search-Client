@@ -1,4 +1,4 @@
-<button class="btn btn-link btn-anchor text-left" (click)="selectCategory('0')" [ngClass]="{ 'font-weight-bold text-body disabled': currentCategoryId === '0' }"
+<button class="btn btn-link btn-anchor text-left" (click)="selectCategory('0')" [ngClass]="{ 'text-body disabled': currentCategoryId === '0' }"
   [attr.tabindex]="currentCategoryId === 0 ? -1 : null ">
   All Categories
 </button>
@@ -12,7 +12,7 @@
   </div>
   <div *ngIf="histogram">
     <li *ngFor="let category of histogram | slice:0:3">
-      <button class="btn btn-link btn-anchor text-left" (click)="selectCategory(category.category.id)" [ngClass]="{ 'font-weight-bold text-body disabled': currentCategoryId === category.category.id }"
+      <button class="btn btn-link btn-anchor text-left" (click)="selectCategory(category.category.id)" [ngClass]="{ 'text-body disabled': currentCategoryId === category.category.id }"
         [attr.tabindex]="currentCategoryId === category.category.id ? -1 : null ">
         {{category.category.name}}
       </button>
