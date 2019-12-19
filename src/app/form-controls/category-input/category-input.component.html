@@ -1,0 +1,28 @@
+<button class="btn btn-link btn-anchor text-left" (click)="selectCategory('0')" [ngClass]="{ 'font-weight-bold text-body disabled': currentCategoryId === '0' }"
+  [attr.tabindex]="currentCategoryId === 0 ? -1 : null ">
+  All Categories
+</button>
+<ul>
+  <div *ngIf="parents">
+    <li *ngFor="let category of parents">
+      <button class="btn btn-link btn-anchor text-left" (click)="selectCategory(category.id)">
+        {{category.name}}
+      </button>
+    </li>
+  </div>
+  <div *ngIf="histogram">
+    <li *ngFor="let category of histogram | slice:0:3">
+      <button class="btn btn-link btn-anchor text-left" (click)="selectCategory(category.category.id)" [ngClass]="{ 'font-weight-bold text-body disabled': currentCategoryId === category.category.id }"
+        [attr.tabindex]="currentCategoryId === category.category.id ? -1 : null ">
+        {{category.category.name}}
+      </button>
+      <ul>
+        <li *ngFor="let child of category.childCategoryHistogram | slice:0:5">
+          <button class="btn btn-link btn-anchor text-left" (click)="selectCategory(child.category.id)">
+            {{child.category.name}}
+          </button>
+        </li>
+      </ul>
+    </li>
+  </div>
+</ul>
