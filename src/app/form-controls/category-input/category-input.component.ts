@@ -2,6 +2,7 @@ import { Component, Input, forwardRef, OnInit, OnChanges } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { ICategory, ApiService } from 'src/app/common/api.service';
+import { fadeIn } from 'src/app/common/animations';
 
 @Component( {
   selector: 'category-input',
@@ -13,7 +14,8 @@ import { ICategory, ApiService } from 'src/app/common/api.service';
       useExisting: forwardRef( () => CategoryInputComponent ),
       multi: true
     }
-  ]
+  ],
+  animations: [ fadeIn ],
 } )
 export class CategoryInputComponent implements ControlValueAccessor, OnInit, OnChanges {
 
@@ -59,6 +61,7 @@ export class CategoryInputComponent implements ControlValueAccessor, OnInit, OnC
 
   update() {
     if ( this.value !== undefined ) {
+      this.parents = undefined;
       this.apiService.getCategoryParents( this.value ).subscribe( res => {
         this.parents = res;
         console.log( this.parents );

@@ -6,17 +6,29 @@ export const fadeOut = trigger( 'fadeOut',
       ':leave',
       [
         style( { opacity: 1 } ),
-        animate( '500ms ease-in', style( { opacity: 0 } ) )
-      ]
-    )
+        animate( '500ms ease-in', style( { opacity: 0 } ) ),
+      ],
+    ),
+  ]
+);
+
+export const fadeIn = trigger( 'fadeIn',
+  [
+    transition(
+      ':enter',
+      [
+        style( { opacity: 0 } ),
+        animate( '500ms ease-out', style( { opacity: 1 } ) ),
+      ],
+    ),
   ]
 );
 
 export const staggerList = trigger( 'staggerList',
   [
     transition(
-      '* => *',
-      [ // each time the binding value changes
+      '* => *', // each time the binding value changes
+      [
         query(
           ':enter',
           [
@@ -28,11 +40,11 @@ export const staggerList = trigger( 'staggerList',
               [
                 animate( '0.5s ease-out', style( { opacity: 1 } ) )
               ]
-            )
+            ),
           ],
           { optional: true }
-        )
+        ),
       ]
-    )
+    ),
   ]
 );
