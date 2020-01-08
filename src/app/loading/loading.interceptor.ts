@@ -14,6 +14,7 @@ export class LoadingInterceptor implements HttpInterceptor {
   private reqCompleted: number = 0;
   private reqTotal: number = 0;
   private startTimeout;
+  private completeTimeout;
 
   setComplete() {
     clearTimeout( this.startTimeout );
@@ -33,13 +34,17 @@ export class LoadingInterceptor implements HttpInterceptor {
     this.reqSent++;
     this.reqTotal++
     this.loadingService.setWidth( this.reqCompleted / this.reqTotal * 100 );
+    clearTimeout( this.completeTimeout );
 
     return next.handle( req ).pipe( finalize( () => {
       this.reqCompleted++;
       this.loadingService.setWidth( this.reqCompleted / this.reqTotal * 100 );
+      console.log( this.reqSent, this.reqTotal, this.reqCompleted )
 
       if ( this.reqCompleted >= this.reqTotal ) {
-        this.setComplete();
+        this.completeTimeout = setTimeout( () => {
+          this.setComplete();
+        }, 300 );
       }
     } ) );
   }

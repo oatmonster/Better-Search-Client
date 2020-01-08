@@ -15,10 +15,12 @@ export class LoadingService {
 
   complete() {
     this.width = 100;
+    console.log( 'complete' );
     setTimeout( () => this.visible = false, 250 );
   }
 
   setWidth( width: number ) {
+    console.log( width );
     this.width = width;
     clearTimeout( this.incTimeout );
     this.incTimeout = setTimeout( () => this.increment(), 250 );

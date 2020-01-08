@@ -6,8 +6,8 @@ import { fadeOut } from '../common/animations';
 @Component( {
   selector: 'loading',
   template: `
-    <div class="progress loading" *ngIf="visible()" [@fadeOut]>
-      <div class="progress-bar bg-warning rounded-0" role="progressbar" [style.width.%]="width()"></div>
+    <div class="progress loading rounded-0" *ngIf="visible()" [@fadeOut]>
+      <div class="progress-bar bg-warning" role="progressbar" [style.width.%]="width()"></div>
     </div>
   `,
   styles: [ `
