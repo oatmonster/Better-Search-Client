@@ -104,6 +104,18 @@ export class ApiService {
     );
   }
 
+  getCategory( id: string ): Observable<ICategory> {
+    let url = environment.baseUrl + 'v2/categories/' + id;
+    return this.httpClient.get<ICategory>( url, { observe: 'response' } ).pipe(
+      retryWhen( this.retryStrategy( {
+        name: 'getCategory',
+      } ) ),
+      map( res => {
+        return res.body;
+      } ),
+    );
+  }
+
   getBaseCategories(): Observable<ICategory[]> {
     let url = environment.baseUrl + 'v2/categories/0/children';
     return this.httpClient.get<ICategory[]>( url, { observe: 'response' } ).pipe(

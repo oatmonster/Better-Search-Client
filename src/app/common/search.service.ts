@@ -39,7 +39,6 @@ export class SearchService {
         } );
       }
       // Clean url
-      console.log( query.query )
       if ( query.page === currentState.page ) {
         delete params.page;
       }

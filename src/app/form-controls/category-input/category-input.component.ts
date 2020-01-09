@@ -35,6 +35,7 @@ export class CategoryInputComponent implements ControlValueAccessor, OnInit, OnC
   currentCategoryId: string
 
   private parents: ICategory[];
+  private currentCategory: ICategory;
   private onChange_ = ( category ) => { }
   private category;
   private totalCount: number;
@@ -64,7 +65,6 @@ export class CategoryInputComponent implements ControlValueAccessor, OnInit, OnC
       this.parents = undefined;
       this.apiService.getCategoryParents( this.value ).subscribe( res => {
         this.parents = res;
-        console.log( this.parents );
       } );
     }
     if ( this.histogram ) {
@@ -73,6 +73,11 @@ export class CategoryInputComponent implements ControlValueAccessor, OnInit, OnC
         count += category.count;
       } );
       this.totalCount = count;
+    }
+    if ( this.currentCategoryId && this.currentCategoryId !== '0' ) {
+      this.apiService.getCategory( this.currentCategoryId ).subscribe( res => {
+        this.currentCategory = res;
+      } );
     }
   }
 

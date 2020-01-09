@@ -7,24 +7,31 @@
     <div>
       <li *ngFor="let category of parents">
         <button class="btn btn-link btn-anchor text-left" (click)="selectCategory(category.id)">
-          {{category.name}}
+          {{ category.name }}
         </button>
       </li>
     </div>
-    <div *ngIf="histogram">
+    <div *ngIf="histogram.length > 0; else noHistogram">
       <li *ngFor="let category of histogram | slice:0:3">
         <button class="btn btn-link btn-anchor text-left" (click)="selectCategory(category.category.id)" [ngClass]="{ 'text-body disabled': currentCategoryId === category.category.id }"
           [attr.tabindex]="currentCategoryId === category.category.id ? -1 : null ">
-          {{category.category.name}}
+          {{ category.category.name }}
         </button>
         <ul>
           <li *ngFor="let child of category.childCategoryHistogram | slice:0:5">
             <button class="btn btn-link btn-anchor text-left" (click)="selectCategory(child.category.id)">
-              {{child.category.name}}
+              {{ child.category.name }}
             </button>
           </li>
         </ul>
       </li>
     </div>
+    <ng-template #noHistogram>
+      <li>
+        <button *ngIf="currentCategory" class="btn btn-link btn-anchor text-left text-body disabled" tabindex="-1">
+          {{ currentCategory.name }}
+        </button>
+      </li>
+    </ng-template>
   </ul>
 </div>
